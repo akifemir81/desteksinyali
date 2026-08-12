@@ -3,121 +3,36 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Yazılım ve dijital hizmet şirketleri için sadeleştirilmiş teşvik ve destek bildirimleri.">
-  <title>DestekSinyali — Doğru desteği zamanında gör</title>
+  <meta name="description" content="Küçük işletmelere uygun destekleri bulur, sadeleştirir ve son tarihi yaklaşmadan haber verir.">
+  <title>DestekSinyali — Size uygun desteği zamanında öğrenin</title>
   <style>
-    :root { --navy:#102a43; --navy2:#163a5f; --green:#197a55; --mint:#e8f5ef; --paper:#f7f9fb; --white:#fff; --ink:#172b3a; --muted:#5c6f7d; --line:#dce4ea; --amber:#8a5b12; --amber-bg:#fff5d9; }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
-    main { width:min(1120px,calc(100% - 36px)); margin:auto; }
-    a { color:var(--navy2); }
-    nav { display:flex; justify-content:space-between; align-items:center; padding:24px 0; }
-    .brand { display:flex; align-items:center; gap:11px; color:var(--navy); font-weight:800; font-size:20px; letter-spacing:-.025em; }
-    .brand-mark { position:relative; width:36px; height:36px; border-radius:10px; background:var(--navy); box-shadow:0 5px 16px rgba(16,42,67,.18); }
-    .brand-mark::before,.brand-mark::after { content:""; position:absolute; border:2px solid #fff; border-left-color:transparent; border-bottom-color:transparent; border-radius:50%; transform:rotate(45deg); }
-    .brand-mark::before { width:14px; height:14px; left:7px; top:11px; }
-    .brand-mark::after { width:7px; height:7px; left:10px; top:14px; }
-    .signal-dot { position:absolute; width:5px; height:5px; border-radius:50%; background:#52c69a; left:8px; bottom:8px; }
-    .pill { display:flex; align-items:center; gap:7px; padding:7px 12px; border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:999px; font-size:12px; font-weight:650; }
-    .pill::before { content:""; width:7px; height:7px; border-radius:50%; background:#27a36f; box-shadow:0 0 0 3px #dff4eb; }
-    .hero { padding:78px 0 56px; display:grid; grid-template-columns:1.08fr .92fr; gap:80px; align-items:center; }
-    .eyebrow { display:inline-flex; gap:8px; align-items:center; margin-bottom:19px; color:var(--green); font-size:13px; font-weight:750; letter-spacing:.04em; text-transform:uppercase; }
-    h1 { margin:0; max-width:700px; color:var(--navy); font-size:clamp(42px,6vw,68px); line-height:1.03; letter-spacing:-.052em; }
-    h1 em { font-style:normal; color:var(--green); }
-    .lead { color:var(--muted); font-size:19px; margin:22px 0 25px; max-width:570px; }
-    .cta { display:inline-flex; align-items:center; gap:9px; color:white; background:var(--navy); padding:14px 19px; border-radius:9px; text-decoration:none; font-weight:750; box-shadow:0 8px 22px rgba(16,42,67,.14); }
-    .cta::after { content:"→"; }
-    .micro { color:var(--muted); font-size:12px; margin-top:12px; }
-    .hero-panel { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:25px; box-shadow:0 18px 50px rgba(16,42,67,.09); }
-    .hero-panel-title { color:var(--navy); font-weight:800; margin-bottom:14px; }
-    .check { display:grid; grid-template-columns:26px 1fr; gap:10px; padding:11px 0; border-top:1px solid #edf1f4; color:var(--muted); font-size:14px; }
-    .check i { display:grid; place-items:center; width:22px; height:22px; border-radius:50%; background:var(--mint); color:var(--green); font-style:normal; font-weight:900; }
-    .trust-strip { display:grid; grid-template-columns:1.15fr repeat(3,1fr); gap:0; margin:15px 0 62px; background:var(--navy); color:white; border-radius:14px; overflow:hidden; }
-    .trust-intro,.trust-item { padding:21px 23px; }
-    .trust-intro { background:var(--navy2); font-weight:750; }
-    .trust-intro small { display:block; margin-top:4px; color:#c8d8e5; font-weight:400; }
-    .trust-item { border-left:1px solid rgba(255,255,255,.13); font-size:13px; color:#d7e2ea; }
-    .trust-item strong { display:block; color:white; margin-bottom:4px; }
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; padding-bottom:74px; }
-    .card { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:25px; }
-    .num { color:var(--green); font-size:12px; font-weight:800; }
-    h2 { color:var(--navy); font-size:21px; letter-spacing:-.025em; }
-    .card p,.opportunity p { color:var(--muted); }
-    .section-head { display:flex; justify-content:space-between; align-items:end; margin:8px 0 22px; }
-    .section-head h2 { font-size:clamp(30px,4vw,43px); margin:0; }
-    #updated { color:var(--muted); font-size:12px; background:#fff; border:1px solid var(--line); padding:7px 10px; border-radius:999px; }
-    .opportunities { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; padding-bottom:76px; }
-    .opportunity { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:25px; box-shadow:0 7px 24px rgba(16,42,67,.035); }
-    .opportunity-top { display:flex; justify-content:space-between; gap:14px; font-size:12px; }
-    .org { color:var(--navy); font-weight:800; } .timing { color:var(--amber); background:var(--amber-bg); padding:4px 8px; border-radius:999px; }
-    h3 { color:var(--navy); font-size:23px; line-height:1.15; letter-spacing:-.025em; }
-    details { border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:12px 0; margin:18px 0; }
-    summary { color:var(--navy); cursor:pointer; font-weight:700; }
-    .tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px; }
-    .tag { color:var(--muted); border:1px solid var(--line); padding:3px 7px; border-radius:999px; font-size:11px; }
-    .source { color:var(--green); font-weight:750; }
-    .signup { background:var(--navy); color:white; border-radius:18px; padding:clamp(28px,5vw,48px); margin-bottom:64px; display:grid; grid-template-columns:.82fr 1.18fr; gap:48px; box-shadow:0 18px 46px rgba(16,42,67,.14); }
-    .signup h2 { color:white; font-size:clamp(30px,4vw,46px); line-height:1.05; margin:0; }
-    .signup p { color:#c8d8e5; }
-    .privacy-note { padding-top:14px; border-top:1px solid rgba(255,255,255,.13); font-size:12px; color:#a9bfce; }
-    form { display:grid; gap:11px; }
-    label { font-size:12px; font-weight:700; }
-    input,select { width:100%; border:1px solid #b8c7d2; border-radius:8px; padding:12px; font:inherit; background:white; color:var(--ink); outline:none; }
-    input:focus,select:focus { border-color:#52a987; box-shadow:0 0 0 3px rgba(82,169,135,.18); }
-    .consent { display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:start; font-weight:400; color:#c8d8e5; }
-    .consent input { width:auto; margin-top:4px; }
-    .consent a { color:white; }
-    button { border:0; border-radius:8px; padding:14px 18px; font:inherit; font-weight:800; background:#49b987; color:#092a1d; cursor:pointer; }
-    button[disabled] { opacity:.55; cursor:wait; }
-    .form-status { min-height:24px; margin:0; font-size:13px; }
-    footer { display:flex; justify-content:space-between; gap:25px; border-top:1px solid var(--line); padding:26px 0 45px; color:var(--muted); font-size:12px; }
-    @media (max-width:800px) { .hero,.grid,.opportunities,.signup,.trust-strip { grid-template-columns:1fr; } .hero { padding:40px 0; gap:30px; } .trust-item { border-left:0; border-top:1px solid rgba(255,255,255,.13); } footer { display:block; } }
+    :root{--cream:#f7f2e9;--paper:#fffdf8;--ink:#17332e;--green:#176b55;--mint:#dff1e8;--coral:#d9785d;--navy:#18334b;--muted:#65736e;--line:#deddd5;--white:#fff;--amber:#8b611b;--amber-bg:#fff0c7}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(1140px,calc(100% - 34px));margin:auto}a{color:var(--green)}nav{display:flex;align-items:center;justify-content:space-between;padding:23px 0}.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:850;letter-spacing:-.03em}.brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:var(--ink);color:#fff;font-size:22px;box-shadow:0 7px 18px #17332e22}.brand-mark i{width:8px;height:8px;border-radius:50%;background:#73d4aa;box-shadow:8px 0 0 #fff,16px 0 0 #fff}.nav-note{font-size:13px;color:var(--muted)}.hero{padding:42px 0 64px}.slider{position:relative;overflow:hidden;border-radius:26px}.slides{display:flex;transition:transform .55s ease}.slide{min-width:100%}.hero-slide{display:grid;grid-template-columns:1.03fr .97fr;min-height:555px;background:var(--paper)}.hero-copy{padding:clamp(35px,6vw,70px);display:flex;flex-direction:column;justify-content:center}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:16px}h1{font-size:clamp(42px,6vw,67px);line-height:1.03;letter-spacing:-.055em;margin:0 0 22px}.lead{font-size:19px;color:var(--muted);max-width:590px;margin:0 0 26px}.cta{align-self:flex-start;padding:14px 19px;border-radius:10px;background:var(--ink);color:#fff;text-decoration:none;font-weight:800}.micro{font-size:12px;color:var(--muted);margin-top:12px}.hero-media{position:relative;min-height:390px}.hero-media img{width:100%;height:100%;object-fit:cover}.photo-label{position:absolute;left:20px;bottom:20px;max-width:280px;padding:13px 15px;border-radius:13px;background:#fffdf8e8;backdrop-filter:blur(8px);font-weight:750}.slider-controls{position:absolute;z-index:3;right:18px;bottom:18px;display:flex;align-items:center;gap:7px}.slider-btn{display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid #ffffff99;border-radius:50%;background:#17332ed9;color:#fff;font-size:18px;cursor:pointer}.dots{display:flex;gap:6px;margin-right:7px}.dot{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#fff9;cursor:pointer}.dot.active{width:24px;border-radius:8px;background:#fff}.purpose{padding:72px 0;display:grid;grid-template-columns:.8fr 1.2fr;gap:70px}.purpose h2,.section-head h2,.audience-head h2{font-size:clamp(32px,4vw,48px);line-height:1.1;letter-spacing:-.04em;margin:0}.purpose-lead{font-size:19px;color:var(--muted)}.steps{display:grid;gap:12px}.step{display:grid;grid-template-columns:43px 1fr;gap:15px;background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px}.step b{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--mint);color:var(--green)}.step h3{font-size:18px;margin:1px 0 3px}.step p{color:var(--muted);margin:0}.honesty{margin-top:17px;padding:15px 17px;border-left:4px solid var(--coral);background:#fff7f3;color:#71483d;border-radius:0 10px 10px 0}.audience{padding:65px 0}.audience-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:24px}.audience-head p{max-width:540px;color:var(--muted);margin:0}.audience-slider{background:var(--navy)}.audience-slide{display:grid;grid-template-columns:1fr 1fr;min-height:440px;color:#fff}.audience-slide img{width:100%;height:100%;object-fit:cover}.audience-copy{padding:clamp(35px,6vw,65px);display:flex;flex-direction:column;justify-content:center}.audience-copy .eyebrow{color:#8dd8b8}.audience-copy h3{font-size:clamp(30px,4vw,45px);line-height:1.1;margin:0 0 17px}.audience-copy p{color:#d9e5e2;font-size:18px}.audience-copy small{color:#a9c4bd}.section-head{display:flex;justify-content:space-between;align-items:end;margin:75px 0 22px}.section-head h2{margin:0}#updated{font-size:12px;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:7px 11px;border-radius:999px}.opportunities{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding-bottom:75px}.opportunity{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 8px 25px #17332e0a}.opportunity-top{display:flex;justify-content:space-between;gap:12px;font-size:12px}.org{font-weight:850}.timing{color:var(--amber);background:var(--amber-bg);padding:4px 8px;border-radius:999px}.opportunity h3{font-size:23px;line-height:1.2;margin:22px 0 12px}.opportunity p{color:var(--muted)}details{border-block:1px solid var(--line);padding:12px 0;margin:18px 0}summary{cursor:pointer;font-weight:800}.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:17px}.tag{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:3px 7px;border-radius:999px}.source{font-weight:800}.signup{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;background:var(--ink);color:#fff;border-radius:24px;padding:clamp(30px,5vw,52px);margin-bottom:65px}.signup h2{font-size:clamp(32px,4vw,47px);line-height:1.08;margin:0}.signup p{color:#c9d9d3}.privacy-note{font-size:12px;color:#abc2ba;padding-top:13px;border-top:1px solid #ffffff22}form{display:grid;gap:10px}label{font-size:12px;font-weight:750}input,select{width:100%;padding:12px;border:1px solid #aec2bb;border-radius:9px;background:#fff;font:inherit}input:focus,select:focus{outline:3px solid #70c7a755;border-color:#70c7a7}.consent{display:grid;grid-template-columns:auto 1fr;gap:9px;font-weight:400;color:#c9d9d3}.consent input{width:auto;margin-top:5px}.consent a{color:#fff}form button{border:0;border-radius:9px;padding:14px;background:#73d4aa;color:#102c24;font:inherit;font-weight:850;cursor:pointer}form button[disabled]{opacity:.55;cursor:wait}.form-status{min-height:24px;margin:0;font-size:13px}footer{display:flex;justify-content:space-between;gap:25px;padding:25px 0 45px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}@media(max-width:800px){.hero-slide,.purpose,.audience-slide,.opportunities,.signup{grid-template-columns:1fr}.hero-copy{order:2}.hero-media{min-height:330px}.purpose{gap:30px;padding:45px 0}.audience-head{display:block}.audience-head p{margin-top:12px}.audience-slide img{height:310px}.audience-copy{min-height:330px}.nav-note{display:none}.section-head{align-items:start;gap:12px}.section-head h2{font-size:34px}footer{display:block}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.slides{transition:none}}
   </style>
 </head>
-<body>
-<main>
-  <nav><div class="brand"><span class="brand-mark" aria-hidden="true"><span class="signal-dot"></span></span>DestekSinyali</div><div class="pill">Kaynaklar aktif izleniyor</div></nav>
-  <section class="hero">
-    <div>
-      <div class="eyebrow">Yazılım şirketleri için destek radarı</div>
-      <h1>Resmî destekleri <em>zamanında</em> ve anlaşılır biçimde görün.</h1>
-      <p class="lead">Yazılım ve dijital hizmet şirketlerine uygun resmî teşvikleri tarar, sadeleştirir ve haftalık tek e-postada göndeririz.</p>
-      <a class="cta" href="#erken-erisim">Ücretsiz erken erişime katıl</a>
-      <div class="micro">Ücretsiz · Kart bilgisi gerekmez · İstediğiniz an ayrılabilirsiniz</div>
+<body><main>
+  <nav><div class="brand"><span class="brand-mark" aria-hidden="true"><i></i></span>DestekSinyali</div><div class="nav-note">Küçük işletmeler için sade destek takibi</div></nav>
+
+  <section class="hero slider" data-slider data-autoplay="6500" aria-label="DestekSinyali ne sağlar?">
+    <div class="slides">
+      <article class="slide hero-slide">
+        <div class="hero-copy"><div class="eyebrow">İlk olarak yazılım ve dijital hizmet şirketleri için</div><h1>Size uygun desteği bulalım. <span style="color:var(--coral)">Son günü kaçırmayın.</span></h1><p class="lead">Kurumların uzun duyurularını tek tek okumayın. Açık destekleri bulur, kimlerin başvurabileceğini ve ilk adımı kısa bir e-postayla anlatırız.</p><a class="cta" href="#erken-erisim">Ücretsiz haftalık özeti al</a><div class="micro">Kart gerekmez · İstediğiniz zaman ayrılabilirsiniz</div></div>
+        <div class="hero-media"><img src="assets/founders-reviewing-support.png" alt="Küçük bir yazılım şirketinde fırsatları birlikte inceleyen iki girişimci"><div class="photo-label">Aramaya daha az, işinize daha çok zaman ayırın.</div></div>
+      </article>
+      <article class="slide hero-slide">
+        <div class="hero-copy"><div class="eyebrow">Karmaşık metin yok</div><h1>Bir fırsat size uygun mu, <span style="color:var(--green)">birkaç dakikada anlayın.</span></h1><p class="lead">Her kayıtta uygun işletme tipini, son tarihi, atılacak ilk adımı ve resmî kaynak bağlantısını aynı yerde gösteririz.</p><a class="cta" href="#radar">Radardaki fırsatlara bak</a><div class="micro">Kararı siz verin; kaynağı her zaman kontrol edin.</div></div>
+        <div class="hero-media"><img src="assets/workshop-owners.png" alt="Küçük işletmelerinde planlama yapan iki kadın girişimci"><div class="photo-label">İnsan dilinde bilgi. Resmî kaynağa doğrudan bağlantı.</div></div>
+      </article>
     </div>
-    <aside class="hero-panel" aria-label="Güven ilkelerimiz"><div class="hero-panel-title">Her fırsatta kontrol edebileceğiniz bilgiler</div><div class="check"><i>✓</i><span>İlgili kurumun doğrudan resmî kaynak bağlantısı</span></div><div class="check"><i>✓</i><span>Son kontrol tarihi ve başvuru zaman bilgisi</span></div><div class="check"><i>✓</i><span>Kimler için uygun olduğu ve atılacak ilk adım</span></div></aside>
+    <div class="slider-controls"><div class="dots" aria-label="Slayt seçimi"></div><button class="slider-btn prev" type="button" aria-label="Önceki slayt">‹</button><button class="slider-btn next" type="button" aria-label="Sonraki slayt">›</button></div>
   </section>
-  <section class="trust-strip" aria-label="Şeffaflık taahhüdü"><div class="trust-intro">Bilgiyi doğrulayın, sonra karar verin.<small>Yorumlarımızın yanında daima birincil kaynağı gösteririz.</small></div><div class="trust-item"><strong>Resmî kurumlar</strong>TÜBİTAK, KOSGEB ve Ticaret Bakanlığı kaynakları</div><div class="trust-item"><strong>Şeffaf güncellik</strong>Her kayıtta son kontrol zamanı</div><div class="trust-item"><strong>Abartısız iletişim</strong>Garanti, danışmanlık veya kazanç vaadi yok</div></section>
-  <section class="grid">
-    <article class="card"><div class="num">01</div><h2>Resmî kaynaktan</h2><p>Kurum duyurularını tek tek aramak yerine kaynağı ve son kontrol tarihini birlikte gör.</p></article>
-    <article class="card"><div class="num">02</div><h2>İnsan dilinde</h2><p>Uzun metinlerin arasından kimlerin başvurabileceğini ve ilk adımı kısa biçimde öğren.</p></article>
-    <article class="card"><div class="num">03</div><h2>Sana uygun</h2><p>Genel haber kalabalığı yerine şirket tipine ve ihracat durumuna uyan sinyalleri al.</p></article>
-  </section>
-  <section>
-    <div class="section-head"><h2>Şu an radarda</h2><span id="updated">Yükleniyor…</span></div>
-    <div class="opportunities" id="opportunities"><p class="load-note">Fırsatlar yükleniyor…</p></div>
-  </section>
-  <section class="signup" id="erken-erisim">
-    <div><h2>İlk sinyali kaçırmayın.</h2><p>Haftalık özeti ücretsiz alın. İlk 20 katılımcı kişisel eşleştirme özelliğini bizimle şekillendirecek.</p><div class="privacy-note">E-posta adresinizi yalnızca erken erişim ve bülten için kullanırız. Bilgilerinizi satmayız; her zaman ayrılabilirsiniz.</div></div>
-    <form id="signup-form">
-      <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none">
-      <input type="hidden" name="_subject" value="Yeni DestekSinyali erken erişim kaydı">
-      <label for="email">İş e-postası</label>
-      <input id="email" type="email" name="email" autocomplete="email" required placeholder="sen@sirket.com">
-      <label for="company">Şirket / proje adı</label>
-      <input id="company" type="text" name="company" autocomplete="organization" maxlength="100" required placeholder="Örn. ABC Yazılım">
-      <label for="export-status">Yurt dışına satış durumu</label>
-      <select id="export-status" name="export_status" required>
-        <option value="">Seç</option><option>Henüz değil</option><option>İlk müşterileri arıyoruz</option><option>Düzenli ihracat yapıyoruz</option>
-      </select>
-      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>Bilgilerimin erken erişim ve haftalık bülten için işlenmesini kabul ediyorum. <a href="gizlilik.html" target="_blank">Kısa gizlilik notu</a></span></label>
-      <button type="submit" disabled>Ücretsiz katıl</button>
-      <p class="form-status" id="form-status" aria-live="polite"></p>
-    </form>
-  </section>
-  <footer><span>DestekSinyali bağımsız bir bilgi ve yönlendirme hizmetidir; kamu kurumu değildir, mali veya hukuki danışmanlık sunmaz.</span><span><a href="gizlilik.html">Gizlilik</a> · <a href="mailto:desteksinyali@gmail.com">İletişim</a></span></footer>
-</main>
-<script src="app.js"></script>
-</body>
-</html>
+
+  <section class="purpose"><div><div class="eyebrow">Biz ne yapıyoruz?</div><h2>Fırsatı buluyor, anlaşılır hale getiriyor, zamanında haber veriyoruz.</h2><p class="purpose-lead">DestekSinyali, küçük işletmelerin kendilerine uygun kamu desteklerini ve teşvikleri gözden kaçırmaması için kurulmuş bir erken uyarı hizmetidir.</p><div class="honesty"><strong>Açık konuşalım:</strong> Başvuruyu sizin yerinize yapmıyoruz ve destek kazanma sözü vermiyoruz. Bilgiyi sadeleştirip resmî kaynağa yönlendiriyoruz.</div></div><div class="steps"><article class="step"><b>1</b><div><h3>Resmî duyuruları takip ederiz</h3><p>TÜBİTAK, KOSGEB ve bakanlıkların açık duyurularını düzenli kontrol ederiz.</p></div></article><article class="step"><b>2</b><div><h3>Uzun metni sadeleştiririz</h3><p>“Kimler başvurabilir, son gün ne zaman, ilk olarak ne yapmalıyım?” sorularını kısa cevaplarız.</p></div></article><article class="step"><b>3</b><div><h3>Size uygun olanı göndeririz</h3><p>Her haberi değil, işletme profilinize uyan fırsatları haftalık özette paylaşmayı hedefleriz.</p></div></article></div></section>
+
+  <section class="audience"><div class="audience-head"><h2>Bugün kimin işine yarar?</h2><p>İlk sürümümüz dar bir alanda doğru çalışsın diye yazılım ve dijital hizmet şirketleriyle başlıyor. Sistem oturduğunda diğer küçük işletmelere açılacak.</p></div><div class="slider audience-slider" data-slider data-autoplay="7200" aria-label="Hedef işletmeler"><div class="slides"><article class="slide audience-slide"><img src="assets/founders-reviewing-support.png" alt="Dijital bir işletmede çalışan iki girişimci"><div class="audience-copy"><div class="eyebrow">Şimdi: ilk odak alanımız</div><h3>Yazılım, SaaS ve dijital hizmet şirketleri</h3><p>Ar-Ge, yapay zekâ, ihracat ve yurt dışı pazarlama desteklerini tek tek aramak istemeyen küçük ekipler için.</p><small>Bu alanla başlamamızın nedeni, fırsatların çok ama dilin çoğu zaman karmaşık olması.</small></div></article><article class="slide audience-slide"><img src="assets/workshop-owners.png" alt="E-ticaret ve üretim yapan küçük işletme sahipleri"><div class="audience-copy"><div class="eyebrow">Sonraki adım</div><h3>E-ticaret, üretim ve hizmet işletmeleri</h3><p>İlk modeli doğruladıktan sonra istihdam, dijitalleşme, ihracat ve yatırım fırsatlarını diğer küçük işletmeler için de sadeleştireceğiz.</p><small>Yani amaç yalnızca yazılım şirketlerine haber vermek değil; küçük işletmeler için güvenilir bir fırsat radarı kurmak.</small></div></article></div><div class="slider-controls"><div class="dots" aria-label="Slayt seçimi"></div><button class="slider-btn prev" type="button" aria-label="Önceki slayt">‹</button><button class="slider-btn next" type="button" aria-label="Sonraki slayt">›</button></div></div></section>
+
+  <section id="radar"><div class="section-head"><h2>Şu an radarda</h2><span id="updated">Yükleniyor…</span></div><div class="opportunities" id="opportunities"><p>Fırsatlar yükleniyor…</p></div></section>
+
+  <section class="signup" id="erken-erisim"><div><h2>Haftalık özeti ücretsiz alın.</h2><p>Size uygun yeni bir destek bulduğumuzda; ne olduğunu, kimin başvurabileceğini ve ilk adımı sade bir e-postayla gönderelim.</p><div class="privacy-note">E-posta adresinizi yalnızca bu hizmet için kullanırız. Bilgilerinizi satmayız; her zaman ayrılabilirsiniz.</div></div><form id="signup-form"><input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none"><input type="hidden" name="_subject" value="Yeni DestekSinyali erken erişim kaydı"><label for="email">E-posta adresiniz</label><input id="email" type="email" name="email" autocomplete="email" required placeholder="sen@sirket.com"><label for="company">Şirket / proje adı</label><input id="company" type="text" name="company" autocomplete="organization" maxlength="100" required placeholder="Örn. ABC Yazılım"><label for="export-status">Yurt dışına satış yapıyor musunuz?</label><select id="export-status" name="export_status" required><option value="">Seçin</option><option>Henüz değil</option><option>İlk müşterileri arıyoruz</option><option>Düzenli ihracat yapıyoruz</option></select><label class="consent"><input type="checkbox" name="consent" value="yes" required><span>Haftalık özet ve erken erişim için bilgilerimin kullanılmasını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik notu</a></span></label><button type="submit" disabled>Ücretsiz kaydol</button><p class="form-status" id="form-status" aria-live="polite"></p></form></section>
+  <footer><span>DestekSinyali bağımsız bir bilgi hizmetidir; kamu kurumu veya başvuru danışmanı değildir.</span><span><a href="gizlilik.html">Gizlilik</a> · <a href="mailto:desteksinyali@gmail.com">İletişim</a></span></footer>
+</main><script src="app.js"></script></body></html>
