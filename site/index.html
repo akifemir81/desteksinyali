@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Yazılım ve dijital hizmet şirketleri için sadeleştirilmiş teşvik ve destek bildirimleri.">
+  <title>DestekSinyali — Doğru desteği zamanında gör</title>
+  <style>
+    :root { --ink:#17211b; --muted:#5f6e64; --lime:#c9ff58; --paper:#f4f1e8; --card:#fffdf7; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif; }
+    main { width:min(1080px,calc(100% - 32px)); margin:auto; }
+    nav { display:flex; justify-content:space-between; align-items:center; padding:26px 0; }
+    .brand { font-weight:850; letter-spacing:-.04em; font-size:21px; }
+    .pill { padding:8px 13px; border:1px solid var(--ink); border-radius:999px; font-size:13px; }
+    .hero { padding:80px 0 92px; display:grid; grid-template-columns:1.35fr .65fr; gap:48px; align-items:end; }
+    h1 { margin:0; max-width:820px; font-size:clamp(44px,7vw,86px); line-height:.95; letter-spacing:-.065em; }
+    h1 em { font-style:normal; background:var(--lime); padding:0 .08em; }
+    .lead { color:var(--muted); font-size:19px; margin:0 0 20px; }
+    .cta { display:inline-block; color:white; background:var(--ink); padding:14px 19px; border-radius:10px; text-decoration:none; font-weight:750; }
+    .micro { color:var(--muted); font-size:12px; margin-top:10px; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; padding-bottom:80px; }
+    .card { background:var(--card); border:1px solid #d8d5ca; border-radius:18px; padding:26px; }
+    .num { color:var(--muted); font-size:13px; }
+    h2 { font-size:22px; letter-spacing:-.03em; }
+    .section-head { display:flex; justify-content:space-between; align-items:end; margin:10px 0 22px; }
+    .section-head h2 { font-size:clamp(30px,5vw,52px); margin:0; }
+    #updated { color:var(--muted); font-size:13px; }
+    .opportunities { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; padding-bottom:80px; }
+    .opportunity { background:var(--card); border:1px solid #d8d5ca; border-radius:18px; padding:25px; }
+    .opportunity-top { display:flex; justify-content:space-between; gap:14px; font-size:12px; }
+    .org { font-weight:750; } .timing { color:#675400; background:#fff0a8; padding:3px 7px; border-radius:999px; }
+    h3 { font-size:24px; line-height:1.1; letter-spacing:-.035em; }
+    details { border-top:1px solid #dedbd1; border-bottom:1px solid #dedbd1; padding:12px 0; margin:18px 0; }
+    summary { cursor:pointer; font-weight:700; }
+    .tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px; }
+    .tag { color:var(--muted); border:1px solid #d8d5ca; padding:3px 7px; border-radius:999px; font-size:11px; }
+    .source { color:var(--ink); font-weight:750; }
+    .signup { background:var(--ink); color:white; border-radius:24px; padding:clamp(25px,5vw,48px); margin-bottom:80px; display:grid; grid-template-columns:.8fr 1.2fr; gap:40px; }
+    .signup h2 { font-size:clamp(30px,5vw,52px); line-height:1; margin:0; }
+    .signup p { color:#cbd3cd; }
+    form { display:grid; gap:12px; }
+    label { font-size:13px; font-weight:700; }
+    input,select { width:100%; border:1px solid #667169; border-radius:9px; padding:12px; font:inherit; background:white; color:var(--ink); }
+    .consent { display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:start; font-weight:400; color:#d8ded9; }
+    .consent input { width:auto; margin-top:4px; }
+    .consent a { color:white; }
+    button { border:0; border-radius:9px; padding:14px 18px; font:inherit; font-weight:800; background:var(--lime); color:var(--ink); cursor:pointer; }
+    button[disabled] { opacity:.55; cursor:wait; }
+    .form-status { min-height:24px; margin:0; font-size:13px; }
+    footer { border-top:1px solid #d8d5ca; padding:25px 0 45px; color:var(--muted); font-size:13px; }
+    @media (max-width:760px) { .hero,.grid,.opportunities,.signup { grid-template-columns:1fr; } .hero { padding:44px 0 60px; } }
+  </style>
+</head>
+<body>
+<main>
+  <nav><div class="brand">DestekSinyali</div><div class="pill">Erken erişim</div></nav>
+  <section class="hero">
+    <h1>Doğru desteği <em>son gün geçmeden</em> gör.</h1>
+    <div>
+      <p class="lead">Yazılım ve dijital hizmet şirketlerine uygun resmî teşvikleri tarar, sadeleştirir ve haftalık tek e-postada göndeririz.</p>
+      <a class="cta" href="#erken-erisim">Ücretsiz erken erişime katıl</a>
+      <div class="micro">Spam yok. Danışmanlık satışı yok. İstediğin an çıkabilirsin.</div>
+    </div>
+  </section>
+  <section class="grid">
+    <article class="card"><div class="num">01</div><h2>Resmî kaynaktan</h2><p>Kurum duyurularını tek tek aramak yerine kaynağı ve son kontrol tarihini birlikte gör.</p></article>
+    <article class="card"><div class="num">02</div><h2>İnsan dilinde</h2><p>Uzun metinlerin arasından kimlerin başvurabileceğini ve ilk adımı kısa biçimde öğren.</p></article>
+    <article class="card"><div class="num">03</div><h2>Sana uygun</h2><p>Genel haber kalabalığı yerine şirket tipine ve ihracat durumuna uyan sinyalleri al.</p></article>
+  </section>
+  <section>
+    <div class="section-head"><h2>Şu an radarda</h2><span id="updated">Yükleniyor…</span></div>
+    <div class="opportunities" id="opportunities"><p class="load-note">Fırsatlar yükleniyor…</p></div>
+  </section>
+  <section class="signup" id="erken-erisim">
+    <div><h2>İlk sinyali kaçırma.</h2><p>Haftalık özeti ücretsiz al. İlk 20 katılımcı kişisel eşleştirme özelliğini bizimle şekillendirecek.</p></div>
+    <form id="signup-form">
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none">
+      <input type="hidden" name="_subject" value="Yeni DestekSinyali erken erişim kaydı">
+      <label for="email">İş e-postası</label>
+      <input id="email" type="email" name="email" autocomplete="email" required placeholder="sen@sirket.com">
+      <label for="company">Şirket / proje adı</label>
+      <input id="company" type="text" name="company" autocomplete="organization" maxlength="100" required placeholder="Örn. ABC Yazılım">
+      <label for="export-status">Yurt dışına satış durumu</label>
+      <select id="export-status" name="export_status" required>
+        <option value="">Seç</option><option>Henüz değil</option><option>İlk müşterileri arıyoruz</option><option>Düzenli ihracat yapıyoruz</option>
+      </select>
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>Bilgilerimin erken erişim ve haftalık bülten için işlenmesini kabul ediyorum. <a href="gizlilik.html" target="_blank">Kısa gizlilik notu</a></span></label>
+      <button type="submit" disabled>Ücretsiz katıl</button>
+      <p class="form-status" id="form-status" aria-live="polite"></p>
+    </form>
+  </section>
+  <footer>DestekSinyali bilgi ve yönlendirme hizmetidir; mali veya hukuki danışmanlık sunmaz. Başvuru öncesinde resmî kaynağı doğrulayın. · <a href="gizlilik.html">Gizlilik</a> · <a href="mailto:desteksinyali@gmail.com">İletişim</a></footer>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

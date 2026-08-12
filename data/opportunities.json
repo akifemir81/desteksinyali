@@ -1,0 +1,35 @@
+{
+  "updated_at": "2026-08-12T00:00:00+03:00",
+  "opportunities": [
+    {
+      "id": "tubitak-1711-yapay-zeka-ekosistem-2026",
+      "title": "1711 Yapay Zekâ Ekosistem Çağrısı",
+      "organization": "TÜBİTAK TEYDEB",
+      "source_url": "https://tubitak.gov.tr/tr/duyuru/1711-yapay-zeka-ekosistem-2026-yili-cagrisi-acildi",
+      "summary": "Müşteri kuruluş ihtiyacına yönelik yapay zekâ çözümleri geliştiren konsorsiyum projeleri için açık çağrı.",
+      "who_is_it_for": "Bir müşteri kuruluşla birlikte çözüm geliştirebilen KOBİ ölçeğindeki teknoloji sağlayıcı sermaye şirketleri ve çağrıdaki diğer uygun paydaşlar.",
+      "first_step": "Müşteri kuruluşu ve teknoloji sağlayıcı ortakları netleştirip kuruluş bazlı ön kayıt durumunu kontrol et.",
+      "deadline": "2026-09-18T23:59:00+03:00",
+      "pre_registration_deadline": "2026-09-14T17:30:00+03:00",
+      "status": "open",
+      "tags": ["yapay-zeka", "arge", "kobi", "konsorsiyum"],
+      "confidence": "high",
+      "checked_at": "2026-08-12"
+    },
+    {
+      "id": "ticaret-bakanligi-bilisim-pazarlama-destegi-2026",
+      "title": "Bilişim Sektörü Yurt Dışı Pazarlama Destekleri",
+      "organization": "T.C. Ticaret Bakanlığı",
+      "source_url": "https://www.ticaret.gov.tr/destekler/hizmet-sektoru-destekleri/bilisim/yurt-disina-yonelik-pazarlama-ve-pazarda-tutundurma-asamasi-destekleri",
+      "summary": "Yazılım, dijital oyun, mobil uygulama ve dijital platformların yurt dışı reklam, tanıtım ve pazarlama faaliyetlerine yönelik destek belgeleri.",
+      "who_is_it_for": "Yurt dışına açılmayı hedefleyen uygun bilişim ve dijital hizmet şirketleri; kesin uygunluk güncel mevzuat ve başvuru belgelerinden doğrulanmalıdır.",
+      "first_step": "Şirket faaliyet alanını destek kapsamıyla karşılaştır ve harcama yapmadan önce ön onay gerekip gerekmediğini kontrol et.",
+      "deadline": null,
+      "pre_registration_deadline": null,
+      "status": "evergreen",
+      "tags": ["ihracat", "yazilim", "pazarlama", "mobil-uygulama"],
+      "confidence": "high",
+      "checked_at": "2026-08-12"
+    }
+  ]
+}

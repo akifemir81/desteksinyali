@@ -1,0 +1,1 @@
+detected_at,opportunity_id,severity,description,correction_sent_at,resolved_at
