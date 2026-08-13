@@ -1,28 +1,21 @@
-# Fırsat inceleme ve yayınlama prosedürü
-
-Otomatik tarayıcı yalnızca aday bağlantı üretir. Bir kayıt aşağıdaki kontroller
-tamamlanmadan `data/opportunities.json` dosyasına eklenmez.
-
-## Zorunlu kontroller
-
-1. Bağlantı ilgili kurumun resmî alan adında ve HTTPS olmalı.
-2. Duyuru halen yürürlükte olmalı; eski veya mülga mevzuat canlı fırsat olarak
-   yayımlanmamalı.
-3. Son başvuru tarihi ve saat dilimi birincil kaynaktan doğrulanmalı.
-4. Uygunluk özeti kesin vaat içermemeli; belirsizlik resmi belgeye yönlendirilmeli.
-5. `checked_at` gerçek kontrol günü olmalı.
-6. Harcama öncesi onay gibi kritik koşullar `first_step` alanına yazılmalı.
-
-## Güven seviyeleri
-
-- `high`: Birincil kurum sayfası veya güncel çağrı belgesi açıkça doğruluyor.
-- `medium`: Kurum sayfası var fakat önemli ayrıntı ek belgeye bağlı.
-- `low`: Yayımlanmaz; inceleme kuyruğunda kalır.
-
-## Hata halinde
-
-- Bir kaynak erişilemiyorsa mevcut kayıt otomatik güncellenmez veya silinmez.
-- Kaynak iki kontrol boyunca erişilemiyorsa bültende “yeniden doğrulanıyor” notu
-  kullanılır.
-- Yanlış kayıt fark edilirse yayından kaldırılır, etkilenen abonelere düzeltme
-  gönderilir ve olay `operations/incidents.csv` dosyasına yazılır.
+{
+  "title": "DestekSinyali haftalık organik paylaşım paketi",
+  "generated": "Üretim tarihi",
+  "linkedin_heading": "LinkedIn — haftanın radarı",
+  "radar_intro": "Bu hafta resmî kaynaklardan doğruladığımız {count} açık fırsat var:",
+  "deadline": "son tarih",
+  "radar_value": "Her fırsatta kimlerin başvurabileceğini, ilk adımı ve doğrudan resmî duyuruyu tek yerde görebilirsiniz.",
+  "hashtags": "#KOBİ #ArGe #TÜBİTAK #Destekler",
+  "community_heading": "Topluluk paylaşımı — değer odaklı",
+  "community_body": "Destek duyurularını takip edenler için ücretsiz bir kaynak hazırladık. Danışmanlık veya destek kazanma vaadi yok; yalnızca açık fırsatların sade özeti, tarihleri ve resmî bağlantıları var.",
+  "community_close": "Topluluk kurallarına uygunsa geri bildiriminizi duymak isteriz.",
+  "short_heading": "Kısa paylaşım",
+  "nearest": "Yaklaşan fırsat",
+  "check_heading": "Yayın kontrolü",
+  "checks": [
+    "Tarih ve bağlantıyı paylaşmadan önce canlı sayfada bir kez aç.",
+    "Aynı metni aynı gün birden fazla topluluğa gönderme.",
+    "Yorumlarda uygunluk garantisi veya danışmanlık vaadi verme.",
+    "İlk 30 dakika içinde gelen sorulara resmî kaynak bağlantısıyla yanıt ver."
+  ]
+}

@@ -1,65 +1,71 @@
+param(
+    [string]$OutputPath = "",
+    [int]$DelayMilliseconds = 1200
+)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
+if (-not $OutputPath) { $OutputPath = Join-Path $root 'output/candidates.json' }
+$outputDir = Split-Path -Parent $OutputPath
+if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir | Out-Null }
 
-& (Join-Path $PSScriptRoot 'validate_data.ps1')
-& (Join-Path $PSScriptRoot 'build.ps1')
-& (Join-Path $PSScriptRoot 'audit_publication.ps1')
-& (Join-Path $PSScriptRoot 'audit_site_quality.ps1')
-& (Join-Path $PSScriptRoot 'generate_digest.ps1')
-& (Join-Path $PSScriptRoot 'campaign_queue.ps1')
-& (Join-Path $PSScriptRoot 'weekly_operations_report.ps1')
-& (Join-Path $PSScriptRoot 'generate_campaign_messages.ps1')
-& (Join-Path $PSScriptRoot 'generate_social_kit.ps1')
-
-$public = Join-Path $root 'public'
-$requiredFiles = @(
-    'index.html',
-    'gizlilik.html',
-    'yontemimiz.html',
-    'pilot.html',
-    'pilot.js',
-    'app.js',
-    'data/opportunities.json',
-    'config/site.json',
-    'feed.xml'
-)
-foreach ($file in $requiredFiles) {
-    if (-not (Test-Path -LiteralPath (Join-Path $public $file))) { throw "Missing build artifact: $file" }
+$registry = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/sources.json') | ConvertFrom-Json
+$published = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
+$keywords = @('destek', 'cagri', 'çağrı', 'hibe', 'teşvik', 'tesvik', 'ihracat', 'ar-ge', 'arge', 'yapay zeka', 'yapay zekâ', 'kobi')
+$candidates = @()
+$failures = @()
+$seen = @{}
+foreach ($item in $published.opportunities) {
+    if ($item.source_url) { $seen[$item.source_url.TrimEnd('/').ToLowerInvariant()] = $true }
 }
 
-$source = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'index.html')
-foreach ($needle in @('id="signup-form"', 'id="opportunities"', 'app.js', 'gizlilik.html')) {
-    if (-not $source.Contains($needle)) { throw "Missing site marker: $needle" }
-}
-foreach ($needle in @('campaign_source', 'campaign_id', 'landing_variant')) {
-    if (-not $source.Contains($needle)) { throw "Missing campaign attribution marker: $needle" }
-}
-if (-not $source.Contains('paid_alert_interest')) { throw 'Missing paid alert interest field' }
-$pilot = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'pilot.html')
-foreach ($needle in @('pilot_490_request', 'PILOT-490-V1', '490 TL', 'id="pilot-form"')) {
-    if (-not $pilot.Contains($needle)) { throw "Missing paid pilot marker: $needle" }
-}
-foreach ($needle in @('FAQPage', 'id="share-box"', 'modern-v2')) {
-    if (-not $source.Contains($needle)) { throw "Missing conversion marker: $needle" }
-}
-
-$automation = Join-Path $root 'automation/google-apps-script/Code.gs'
-if (-not (Test-Path -LiteralPath $automation)) { throw 'Missing Google Apps Script automation' }
-$automationSource = Get-Content -Raw -Encoding UTF8 -LiteralPath $automation
-foreach ($needle in @('setupDestekSinyali', 'processRegistrationEmails', 'sendWeeklyDigest', 'sendOwnerWeeklyReport', 'processUnsubscribeEmails', 'MailApp.getRemainingDailyQuota')) {
-    if (-not $automationSource.Contains($needle)) { throw "Missing automation marker: $needle" }
-}
-$manifestPath = Join-Path $root 'automation/google-apps-script/appsscript.json'
-$manifest = Get-Content -Raw -Encoding UTF8 -LiteralPath $manifestPath | ConvertFrom-Json
-if ($manifest.timeZone -ne 'Europe/Istanbul') { throw 'Invalid Apps Script timezone' }
-if ('https://mail.google.com/' -notin $manifest.oauthScopes) { throw 'Missing Gmail automation scope' }
-
-$digest = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'output/weekly-digest.md')
-$data = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
-foreach ($item in $data.opportunities) {
-    if ($item.status -in @('open','evergreen') -and -not $digest.Contains($item.title)) {
-        throw "Active opportunity absent from digest: $($item.id)"
+foreach ($source in ($registry.sources | Sort-Object priority)) {
+    try {
+        $response = Invoke-WebRequest -UseBasicParsing -Uri $source.url -Method Get -MaximumRedirection 5 -TimeoutSec 30 -Headers @{
+            'User-Agent' = 'DestekSinyali/0.1 (+public-source-monitor; one-request-per-source)'
+        }
+        $linkPattern = '(?is)<a\b[^>]*?href\s*=\s*["''](?<href>[^"'']+)["''][^>]*>(?<text>.*?)</a>'
+        foreach ($match in [regex]::Matches([string]$response.Content, $linkPattern)) {
+            $rawText = [regex]::Replace($match.Groups['text'].Value, '<[^>]+>', ' ')
+            $title = [System.Net.WebUtility]::HtmlDecode($rawText).Trim()
+            $title = [regex]::Replace($title, '\s+', ' ')
+            $href = [System.Net.WebUtility]::HtmlDecode($match.Groups['href'].Value)
+            if ([string]::IsNullOrWhiteSpace($title) -or [string]::IsNullOrWhiteSpace($href)) { continue }
+            $normalized = $title.ToLowerInvariant()
+            $matched = @($keywords | Where-Object { $normalized.Contains($_) })
+            if ($matched.Count -eq 0) { continue }
+            try { $absolute = [uri]::new([uri]$source.url, $href) } catch { continue }
+            if ($absolute.Scheme -ne 'https') { continue }
+            $pathAllowed = $false
+            foreach ($pathPattern in $source.include_path_patterns) {
+                if ($absolute.AbsolutePath -match $pathPattern) { $pathAllowed = $true; break }
+            }
+            if (-not $pathAllowed) { continue }
+            $key = $absolute.AbsoluteUri.TrimEnd('/').ToLowerInvariant()
+            if ($seen.ContainsKey($key)) { continue }
+            $seen[$key] = $true
+            $candidates += [ordered]@{
+                title = $title
+                url = $absolute.AbsoluteUri
+                source_id = $source.id
+                organization = $source.organization
+                matched_keywords = $matched
+                discovered_at = [datetimeoffset]::Now.ToString('o')
+                review_status = 'pending'
+            }
+        }
+    } catch {
+        $failures += [ordered]@{ source_id=$source.id; error=$_.Exception.Message }
     }
+    Start-Sleep -Milliseconds $DelayMilliseconds
 }
 
-Write-Output 'All checks passed.'
+[ordered]@{
+    generated_at = [datetimeoffset]::Now.ToString('o')
+    candidate_count = $candidates.Count
+    published_urls_skipped = $published.opportunities.Count
+    candidates = $candidates
+    failures = $failures
+} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath $OutputPath -Encoding UTF8
+
+Write-Output "Candidate scan complete: $($candidates.Count) candidates, $($failures.Count) failures"
+if ($failures.Count -eq $registry.sources.Count) { exit 2 }

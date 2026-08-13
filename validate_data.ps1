@@ -1,49 +1,34 @@
-param(
-    [string]$OutputPath = "",
-    [switch]$FailOnError
-)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-if (-not $OutputPath) { $OutputPath = Join-Path $root 'data/source-health.json' }
-$registry = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/sources.json') | ConvertFrom-Json
-$opportunities = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
-$targets = @()
-foreach ($source in $registry.sources) {
-    $targets += [pscustomobject]@{ id=$source.id; type='registry'; url=$source.url }
-}
-foreach ($opportunity in $opportunities.opportunities) {
-    $targets += [pscustomobject]@{ id=$opportunity.id; type='opportunity'; url=$opportunity.source_url }
-}
-$targets = @($targets | Sort-Object url -Unique)
-$results = @()
+$public = Join-Path $root 'public'
+$data = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
+$sitemap = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'sitemap.xml')
+$generated = @(Get-ChildItem -LiteralPath (Join-Path $public 'firsatlar') -Filter '*.html' -File)
 
-foreach ($source in $targets) {
-    $checkedAt = [datetimeoffset]::Now.ToString('o')
-    $lastError = $null
-    $response = $null
-    foreach ($attempt in 1..2) {
-        try {
-            $response = Invoke-WebRequest -UseBasicParsing -Uri $source.url -Method Get -MaximumRedirection 5 -TimeoutSec 25 -Headers @{'User-Agent'='DestekSinyali/0.1 source-monitor'}
-            break
-        } catch {
-            $lastError = $_
-            if ($attempt -lt 2) { Start-Sleep -Seconds 2 }
+if ($generated.Count -ne $data.opportunities.Count) {
+    throw "Fırsat sayfası sayısı uyuşmuyor: veri=$($data.opportunities.Count), sayfa=$($generated.Count)"
+}
+
+foreach ($item in $data.opportunities) {
+    $relative = "firsatlar/$($item.id).html"
+    $pagePath = Join-Path $public $relative
+    if (-not (Test-Path -LiteralPath $pagePath)) { throw "Eksik fırsat sayfası: $relative" }
+    if (-not $sitemap.Contains($relative)) { throw "Sitemap fırsatı içermiyor: $($item.id)" }
+    $page = Get-Content -Raw -Encoding UTF8 -LiteralPath $pagePath
+    foreach ($needle in @($item.title, $item.source_url, 'application/ld+json')) {
+        if (-not $page.Contains([System.Net.WebUtility]::HtmlEncode([string]$needle)) -and -not $page.Contains([string]$needle)) {
+            throw "Fırsat sayfasında içerik eksik: $($item.id)"
         }
     }
-    if ($response) {
-        $results += [ordered]@{ id=$source.id; type=$source.type; url=$source.url; ok=($response.StatusCode -eq 200); status=[int]$response.StatusCode; checked_at=$checkedAt }
-    } else {
-        $status = if ($lastError.Exception.Response) { [int]$lastError.Exception.Response.StatusCode } else { 0 }
-        $results += [ordered]@{ id=$source.id; type=$source.type; url=$source.url; ok=$false; status=$status; checked_at=$checkedAt; error=$lastError.Exception.Message }
+}
+
+$textFiles = @(Get-ChildItem -LiteralPath $public -Recurse -File | Where-Object Extension -in @('.html','.js','.json','.xml'))
+foreach ($file in $textFiles) {
+    $content = Get-Content -Raw -Encoding UTF8 -LiteralPath $file.FullName
+    $suspicious = @([char]0x00C3, [char]0x00C4, [char]0x00C5, [char]0xFFFD)
+    foreach ($marker in $suspicious) {
+        if ($content.Contains([string]$marker)) { throw "Possible character encoding issue: $($file.FullName)" }
     }
 }
 
-[ordered]@{ generated_at=[datetimeoffset]::Now.ToString('o'); sources=$results } |
-    ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $OutputPath -Encoding utf8
-Write-Output "Kaynak kontrolü tamamlandı: $($results.Count) kaynak"
-if ($FailOnError) {
-    $failed = @($results | Where-Object { -not $_.ok })
-    if ($failed.Count) {
-        throw "Erişilemeyen resmi bağlantı: $($failed[0].id) ($($failed[0].status)) $($failed[0].url)"
-    }
-}
+Write-Output "Yayın denetimi başarılı: $($generated.Count) fırsat sayfası"

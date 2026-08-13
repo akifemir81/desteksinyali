@@ -1,71 +1,29 @@
-param(
-    [string]$OutputPath = "",
-    [int]$DelayMilliseconds = 1200
-)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-if (-not $OutputPath) { $OutputPath = Join-Path $root 'output/candidates.json' }
-$outputDir = Split-Path -Parent $OutputPath
-if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir | Out-Null }
+$public = Join-Path $root 'public'
+$htmlFiles = @(Get-ChildItem -LiteralPath $public -Recurse -Filter '*.html' -File)
 
-$registry = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/sources.json') | ConvertFrom-Json
-$published = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
-$keywords = @('destek', 'cagri', 'çağrı', 'hibe', 'teşvik', 'tesvik', 'ihracat', 'ar-ge', 'arge', 'yapay zeka', 'yapay zekâ', 'kobi')
-$candidates = @()
-$failures = @()
-$seen = @{}
-foreach ($item in $published.opportunities) {
-    if ($item.source_url) { $seen[$item.source_url.TrimEnd('/').ToLowerInvariant()] = $true }
-}
-
-foreach ($source in ($registry.sources | Sort-Object priority)) {
-    try {
-        $response = Invoke-WebRequest -UseBasicParsing -Uri $source.url -Method Get -MaximumRedirection 5 -TimeoutSec 30 -Headers @{
-            'User-Agent' = 'DestekSinyali/0.1 (+public-source-monitor; one-request-per-source)'
-        }
-        $linkPattern = '(?is)<a\b[^>]*?href\s*=\s*["''](?<href>[^"'']+)["''][^>]*>(?<text>.*?)</a>'
-        foreach ($match in [regex]::Matches([string]$response.Content, $linkPattern)) {
-            $rawText = [regex]::Replace($match.Groups['text'].Value, '<[^>]+>', ' ')
-            $title = [System.Net.WebUtility]::HtmlDecode($rawText).Trim()
-            $title = [regex]::Replace($title, '\s+', ' ')
-            $href = [System.Net.WebUtility]::HtmlDecode($match.Groups['href'].Value)
-            if ([string]::IsNullOrWhiteSpace($title) -or [string]::IsNullOrWhiteSpace($href)) { continue }
-            $normalized = $title.ToLowerInvariant()
-            $matched = @($keywords | Where-Object { $normalized.Contains($_) })
-            if ($matched.Count -eq 0) { continue }
-            try { $absolute = [uri]::new([uri]$source.url, $href) } catch { continue }
-            if ($absolute.Scheme -ne 'https') { continue }
-            $pathAllowed = $false
-            foreach ($pathPattern in $source.include_path_patterns) {
-                if ($absolute.AbsolutePath -match $pathPattern) { $pathAllowed = $true; break }
-            }
-            if (-not $pathAllowed) { continue }
-            $key = $absolute.AbsoluteUri.TrimEnd('/').ToLowerInvariant()
-            if ($seen.ContainsKey($key)) { continue }
-            $seen[$key] = $true
-            $candidates += [ordered]@{
-                title = $title
-                url = $absolute.AbsoluteUri
-                source_id = $source.id
-                organization = $source.organization
-                matched_keywords = $matched
-                discovered_at = [datetimeoffset]::Now.ToString('o')
-                review_status = 'pending'
-            }
-        }
-    } catch {
-        $failures += [ordered]@{ source_id=$source.id; error=$_.Exception.Message }
+foreach ($file in $htmlFiles) {
+    $html = Get-Content -Raw -Encoding UTF8 -LiteralPath $file.FullName
+    if ($html -notmatch '<html[^>]+lang="tr"') { throw "Missing Turkish language marker: $($file.FullName)" }
+    foreach ($imageMatch in [regex]::Matches($html, '<img\b[^>]*>')) {
+        if ($imageMatch.Value -notmatch '\balt="[^"]*"') { throw "Image without alt text: $($file.FullName)" }
     }
-    Start-Sleep -Milliseconds $DelayMilliseconds
+    foreach ($blankMatch in [regex]::Matches($html, '<a\b[^>]*target="_blank"[^>]*>')) {
+        if ($blankMatch.Value -match '\bhref="https?://' -and $blankMatch.Value -notmatch '\brel="[^"]*noopener') { throw "Unsafe external target blank link: $($file.FullName)" }
+    }
+    foreach ($fieldMatch in [regex]::Matches($html, '<(input|select|textarea)\b[^>]*\bid="([^"]+)"[^>]*>')) {
+        if ($fieldMatch.Value -match '\btype="hidden"') { continue }
+        $id = [regex]::Escape($fieldMatch.Groups[2].Value)
+        if ($html -notmatch ('<label\b[^>]*for="' + $id + '"')) { throw "Form field without label: $($file.FullName) #$id" }
+    }
+    foreach ($assetMatch in [regex]::Matches($html, '(?:href|src)="([^"]+)"')) {
+        $reference = $assetMatch.Groups[1].Value.Split('?')[0].Split('#')[0]
+        if (-not $reference -or $reference -match '^(https?:|mailto:|tel:|data:)') { continue }
+        $decoded = [uri]::UnescapeDataString($reference)
+        $target = Join-Path $file.DirectoryName $decoded
+        if (-not (Test-Path -LiteralPath $target)) { throw "Broken internal reference: $reference in $($file.FullName)" }
+    }
 }
 
-[ordered]@{
-    generated_at = [datetimeoffset]::Now.ToString('o')
-    candidate_count = $candidates.Count
-    published_urls_skipped = $published.opportunities.Count
-    candidates = $candidates
-    failures = $failures
-} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath $OutputPath -Encoding UTF8
-
-Write-Output "Candidate scan complete: $($candidates.Count) candidates, $($failures.Count) failures"
-if ($failures.Count -eq $registry.sources.Count) { exit 2 }
+Write-Output "Site quality audit passed: $($htmlFiles.Count) HTML files"

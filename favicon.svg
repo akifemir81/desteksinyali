@@ -1,9 +1,34 @@
-<!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gizlilik — DestekSinyali</title>
-<style>body{max-width:720px;margin:60px auto;padding:0 20px;background:#f4f7fa;color:#0c2238;font:16px/1.65 system-ui}a{color:#0d4eb3}h1{font-size:42px;letter-spacing:-.04em}p{background:#fff;border:1px solid #dfe7ef;border-radius:14px;padding:18px}</style></head>
-<body><a href="index.html">← DestekSinyali</a><h1>Kısa gizlilik notu</h1>
-<p>Erken erişim formunda e-posta adresinizi, şirket/proje adınızı, ihracat durumunuzu ve yanıtlamayı seçerseniz ücretli uyarı ilginizi topluyoruz. Bu bilgileri yalnızca DestekSinyali erken erişimi, ürün araştırması ve izin verdiğiniz haftalık bülten için kullanırız.</p>
-<p>Bir kampanya bağlantısından geldiğinizde yalnızca kampanya kaynağı ve anonim temas kodu (örneğin DS-005) forma eklenir. Çerez, reklam takip pikseli veya siteler arası gezinme takibi kullanmıyoruz. Bu kodu hangi tanıtım mesajının kayıt sağladığını ölçmek için kullanırız.</p>
-<p>Form iletimi <a href="https://formsubmit.co/privacy.pdf" rel="noopener" target="_blank">FormSubmit</a> üzerinden yapılır. Sağlayıcının belgelerine göre gönderimler 30 gün boyunca arşivlenebilir. Bilgilerinizi satmayız. Liste dışına çıkmak veya verinizin silinmesini istemek için <a href="mailto:desteksinyali@gmail.com">desteksinyali@gmail.com</a> adresine yazabilirsiniz.</p>
-<p>DestekSinyali mali veya hukuki danışmanlık sunmaz. Bu metin ürün doğrulama dönemine ait sade bilgilendirmedir; hizmet kapsamı değişirse güncellenir.</p>
-<p><strong>Son güncelleme:</strong> 12 Ağustos 2026</p></body></html>
+import json
+from pathlib import Path
+from urllib.parse import urlparse
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "data" / "opportunities.json"
+REQUIRED = {"id", "title", "organization", "source_url", "summary", "checked_at"}
+
+
+def main() -> None:
+    payload = json.loads(DATA.read_text(encoding="utf-8"))
+    rows = payload.get("opportunities")
+    if not isinstance(rows, list):
+        raise SystemExit("opportunities bir liste olmalı")
+
+    seen = set()
+    for index, row in enumerate(rows):
+        missing = REQUIRED - row.keys()
+        if missing:
+            raise SystemExit(f"Kayıt {index}: eksik alanlar: {sorted(missing)}")
+        if row["id"] in seen:
+            raise SystemExit(f"Tekrarlanan id: {row['id']}")
+        seen.add(row["id"])
+        parsed = urlparse(row["source_url"])
+        if parsed.scheme != "https" or not parsed.netloc:
+            raise SystemExit(f"Kayıt {index}: geçersiz kaynak URL'si")
+
+    print(f"Doğrulandı: {len(rows)} fırsat")
+
+
+if __name__ == "__main__":
+    main()
+

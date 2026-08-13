@@ -1,6 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="DestekSinyali">
-  <defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1769e0"/><stop offset="1" stop-color="#0c2238"/></linearGradient></defs>
-  <rect width="64" height="64" rx="18" fill="url(#b)"/>
-  <circle cx="34" cy="30" r="16" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="73 28" transform="rotate(-42 34 30)"/>
-  <circle cx="18" cy="45" r="5" fill="#28c1c8"/>
-</svg>
+name: Deploy DestekSinyali
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and test site
+        shell: pwsh
+        run: ./scripts/test.ps1
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

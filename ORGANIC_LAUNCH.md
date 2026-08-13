@@ -1,58 +1,63 @@
-# DestekSinyali — ilk talep doğrulama kampanyası
+# DestekSinyali — son kurulum
 
-## Amaç
+Bu depo; canlı site, resmî kaynak taraması, fırsat inceleme kuyruğu, kampanya
+takibi ve Gmail bülten otomasyonunu içerir.
 
-İlk kampanyanın amacı yüksek gönderim sayısı değil, şu üç soruyu kanıtlamaktır:
+## 1. GitHub'a yükleme
 
-1. İşletmeler destekleri takip etmekte gerçekten zorlanıyor mu?
-2. Kısa ve kaynaklı bir haftalık özet istiyorlar mı?
-3. Şirketlerine özel anlık bildirim için ödeme düşünürler mi?
+Final paketin içindeki dosya ve klasörleri `akifemir81/desteksinyali` deposunun
+ana dizinine yükleyin. `.github` klasörünün de yüklendiğinden emin olun.
 
-## İlk hedef profil
+Yükleme tamamlanınca GitHub **Actions** bölümünde şu işler görünür:
 
-- Türkiye'de faaliyet gösteren küçük yazılım, SaaS veya dijital hizmet şirketi,
-- açık bir şirket sitesi ve doğrulanabilir faaliyet alanı,
-- kurucu, iş geliştirme, satış veya ihracat sorumlusu,
-- Ar-Ge, ihracat, yapay zekâ ya da yurt dışı büyüme ihtimali.
+- `Deploy DestekSinyali`
+- `Monitor official sources`
+- `Build weekly operating pack`
 
-Bu yalnızca ilk doğrulama segmentidir; ürünün kalıcı sınırı değildir.
+İlk iş yeşil olduğunda site şu adreste güncellenir:
 
-## Kanal sırası
+<https://akifemir81.github.io/desteksinyali/>
 
-1. Kamuya açık kurumsal e-posta varsa kişisel ve tekil e-posta.
-2. Kurucu/iş geliştirme kişisi belliyse kişisel LinkedIn mesajı.
-3. Yalnızca iletişim formu varsa form; otomatik/toplu gönderim yok.
+## 2. Canlı kayıt testi
 
-Satın alınmış liste, kazınmış kişisel adres ve toplu gönderim kullanılmaz.
+Siteyi gizli sekmede açın ve kendinize ait bir test adresiyle kayıt olun.
+`desteksinyali@gmail.com` hesabına FormSubmit kayıt e-postası gelmelidir. E-postada
+şu alanlar görünmelidir:
 
-## Gönderim temposu
+- `email`
+- `company`
+- `paid_alert_interest`
+- `campaign_source`
+- `campaign_id`
+- `consent`
 
-- İlk gün en fazla 3 yeni temas.
-- Sonraki günler, cevap kalitesine göre en fazla 5 yeni temas.
-- Cevap yoksa 4 gün sonra yalnızca bir hatırlatma.
-- İkinci yanıtsız mesajdan sonra kişi kapatılır.
-- Olumsuz cevap veren veya iletişim istemeyen kişi tekrar aranmaz.
+## 3. Gmail otomasyonunu bir kez yetkilendirme
 
-## Mesaj ilkeleri
+`automation/google-apps-script/README.md` içindeki adımları
+`desteksinyali@gmail.com` hesabında uygulayın. Google'ın zorunlu izin ekranı
+hesap sahibi tarafından yalnızca bir kez onaylanır.
 
-- İlk mesaj 90 kelimenin altında kalır.
-- Şirket hakkında yalnızca resmî sitesinde görülen tek bir gerçek kullanılır.
-- “Destek kazandırıyoruz” veya “başvurunuzu yapıyoruz” denmez.
-- Görüşme talebi 12 dakika ve dört soru olarak açıkça belirtilir.
-- Bağlantı yalnızca canlı site son kontrolden geçtiyse eklenir.
+Kurulumdan sonra sistem:
 
-## Başarı eşiği
+- saatte bir yeni kayıtları işler,
+- hoş geldin mesajını yollar,
+- pazartesi haftalık özeti gönderir,
+- abonelikten çıkış taleplerini uygular.
 
-20 doğru temastan sonra: en az 5 anlamlı cevap, 5 problem görüşmesi, 10 ücretsiz
-özet kaydı ve 3 kişisel alarm ödeme niyeti aranır. Bu sinyaller oluşmadan ücretli
-altyapı veya reklam bütçesi açılmaz.
+## 4. Pazarlamayı başlatma kapısı
 
-## Günlük çalışma
+Canlı sayfa ve kayıt testi doğrulanmadan dış mesaj gönderilmez. Test başarılıysa
+`output/campaign-messages.md` dosyasındaki ilk üç kişiselleştirilmiş mesajla
+başlanır. Mesaj dosyası şu komutla üretilir:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/campaign_queue.ps1
+powershell -ExecutionPolicy Bypass -File scripts/generate_campaign_messages.ps1
 ```
 
-Durumlar: `research`, `ready`, `sent`, `replied`, `interviewed`, `followed_up`,
-`closed`, `do_not_contact`.
+## Başarı kararı
+
+İlk karar 20 doğru temas sonrasında verilir. Ücretli kişisel alarm yalnızca en az
+10 nitelikli kayıtta 3 kişinin aylık 249 TL pilot ilgisi göstermesi halinde
+geliştirilir. Formdaki ilgi beyanı ödeme değildir; gerçek ücretli pilot ayrıca
+açık onayla sunulur.
 

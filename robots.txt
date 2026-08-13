@@ -1,34 +1,53 @@
-import json
-from pathlib import Path
-from urllib.parse import urlparse
+param(
+    [string]$OutputPath = "",
+    [datetimeoffset]$Now = [datetimeoffset]::Now
+)
+$ErrorActionPreference = 'Stop'
+$root = Split-Path -Parent $PSScriptRoot
+if (-not $OutputPath) { $OutputPath = Join-Path $root 'output/weekly-digest.md' }
+$outputDir = Split-Path -Parent $OutputPath
+if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir | Out-Null }
+$payload = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
+$active = @($payload.opportunities | Where-Object { $_.status -in @('open','evergreen') })
 
+$lines = @(
+    '# DestekSinyali - Haftalik firsat ozeti',
+    '',
+    "**Yayin tarihi:** $($Now.ToString('dd.MM.yyyy'))",
+    '',
+    "Bu hafta radarda **$($active.Count) firsat** var. Basvuru yapmadan once resmi kaynagi kontrol edin.",
+    ''
+)
 
-ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data" / "opportunities.json"
-REQUIRED = {"id", "title", "organization", "source_url", "summary", "checked_at"}
+foreach ($item in $active) {
+    $timing = 'Donemsel / surekli kontrol'
+    if ($item.deadline) {
+        $deadline = [datetimeoffset]::Parse($item.deadline)
+        $days = [math]::Ceiling(($deadline - $Now).TotalDays)
+        $timing = "Son tarih: $($deadline.ToString('dd.MM.yyyy HH:mm')) - $days gun kaldi"
+    }
+    $lines += @(
+        "## $($item.title)",
+        '',
+        "**Kurum:** $($item.organization)  ",
+        "**Zaman:** $timing  ",
+        '',
+        $item.summary,
+        '',
+        "**Kimler icin?** $($item.who_is_it_for)",
+        '',
+        "**Ilk adim:** $($item.first_step)",
+        '',
+        "[Resmi kaynagi ac]($($item.source_url))",
+        '',
+        '---',
+        ''
+    )
+}
 
-
-def main() -> None:
-    payload = json.loads(DATA.read_text(encoding="utf-8"))
-    rows = payload.get("opportunities")
-    if not isinstance(rows, list):
-        raise SystemExit("opportunities bir liste olmalı")
-
-    seen = set()
-    for index, row in enumerate(rows):
-        missing = REQUIRED - row.keys()
-        if missing:
-            raise SystemExit(f"Kayıt {index}: eksik alanlar: {sorted(missing)}")
-        if row["id"] in seen:
-            raise SystemExit(f"Tekrarlanan id: {row['id']}")
-        seen.add(row["id"])
-        parsed = urlparse(row["source_url"])
-        if parsed.scheme != "https" or not parsed.netloc:
-            raise SystemExit(f"Kayıt {index}: geçersiz kaynak URL'si")
-
-    print(f"Doğrulandı: {len(rows)} fırsat")
-
-
-if __name__ == "__main__":
-    main()
-
+$lines += @(
+    'DestekSinyali bilgi ve yonlendirme hizmetidir; mali veya hukuki danismanlik sunmaz.',
+    'Bu e-postayi istemiyorsaniz abonelikten cikma baglantisini kullanabilirsiniz.'
+)
+$lines -join "`n" | Set-Content -LiteralPath $OutputPath -Encoding utf8
+Write-Output "Bulten taslagi hazir: $OutputPath"

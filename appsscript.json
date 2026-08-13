@@ -1,6 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="DestekSinyali">
-  <defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1769e0"/><stop offset="1" stop-color="#0c2238"/></linearGradient></defs>
-  <rect width="64" height="64" rx="18" fill="url(#b)"/>
-  <circle cx="34" cy="30" r="16" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="73 28" transform="rotate(-42 34 30)"/>
-  <circle cx="18" cy="45" r="5" fill="#28c1c8"/>
-</svg>
+name: Monitor official sources
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect candidate announcements
+        shell: pwsh
+        run: ./scripts/collect_candidates.ps1
+      - name: Check source health
+        shell: pwsh
+        run: ./scripts/check_sources.ps1 -OutputPath output/source-health.json -FailOnError
+      - name: Build human review report
+        shell: pwsh
+        run: ./scripts/build_review_report.ps1
+      - name: Upload review queue
+        uses: actions/upload-artifact@v4
+        with:
+          name: opportunity-candidates-${{ github.run_number }}
+          path: |
+            output/candidates.json
+            output/candidate-review.md
+            output/source-health.json
+          retention-days: 14

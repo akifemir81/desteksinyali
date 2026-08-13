@@ -1,32 +1,75 @@
-const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+$ErrorActionPreference = 'Stop'
+$root = Split-Path -Parent $PSScriptRoot
 
-function setupSlider(slider) {
-  const track = slider.querySelector('.slides'); const slides = [...slider.querySelectorAll('.slide')]; const dotsBox = slider.querySelector('.dots');
-  let current = 0, timer;
-  slides.forEach((_, index) => { const dot = document.createElement('button'); dot.type='button'; dot.className='dot'; dot.setAttribute('aria-label',`${index+1}. slaytı göster`); dot.addEventListener('click',()=>show(index,true)); dotsBox.appendChild(dot); });
-  const dots=[...dotsBox.children];
-  function show(index,restart=false){current=(index+slides.length)%slides.length;track.style.transform=`translateX(-${current*100}%)`;dots.forEach((d,i)=>d.classList.toggle('active',i===current));if(restart)start()}
-  slider.querySelector('.prev').addEventListener('click',()=>show(current-1,true)); slider.querySelector('.next').addEventListener('click',()=>show(current+1,true));
-  function start(){clearInterval(timer);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)timer=setInterval(()=>show(current+1),Number(slider.dataset.autoplay||7000))}
-  slider.addEventListener('mouseenter',()=>clearInterval(timer));slider.addEventListener('mouseleave',start);slider.addEventListener('focusin',()=>clearInterval(timer));slider.addEventListener('focusout',start);show(0);start();
+& (Join-Path $PSScriptRoot 'validate_data.ps1')
+& (Join-Path $PSScriptRoot 'build.ps1')
+& (Join-Path $PSScriptRoot 'audit_publication.ps1')
+& (Join-Path $PSScriptRoot 'audit_site_quality.ps1')
+& (Join-Path $PSScriptRoot 'generate_digest.ps1')
+& (Join-Path $PSScriptRoot 'campaign_queue.ps1')
+& (Join-Path $PSScriptRoot 'weekly_operations_report.ps1')
+& (Join-Path $PSScriptRoot 'generate_campaign_messages.ps1')
+& (Join-Path $PSScriptRoot 'generate_social_kit.ps1')
+
+$public = Join-Path $root 'public'
+$requiredFiles = @(
+    'index.html',
+    'gizlilik.html',
+    'yontemimiz.html',
+    'pilot.html',
+    'pilot.js',
+    'assets/favicon.svg',
+    'assets/brand-mark.svg',
+    'assets/icons.svg',
+    'assets/safari-pinned-tab.svg',
+    'app.js',
+    'data/opportunities.json',
+    'config/site.json',
+    'feed.xml'
+)
+foreach ($file in $requiredFiles) {
+    if (-not (Test-Path -LiteralPath (Join-Path $public $file))) { throw "Missing build artifact: $file" }
 }
-document.querySelectorAll('[data-slider]').forEach(setupSlider);
 
-const campaignParams = new URLSearchParams(location.search);
-const cleanCampaignValue = value => /^[a-zA-Z0-9_-]{1,40}$/.test(value || '') ? value : '';
-const campaignSource = cleanCampaignValue(campaignParams.get('ref')) || 'direct';
-const campaignId = cleanCampaignValue(campaignParams.get('cid'));
-document.querySelector('#campaign-source').value = campaignSource;
-document.querySelector('#campaign-id').value = campaignId;
-const legacyPilotOption=document.querySelector('option[value="pilot_249_yes"]');if(legacyPilotOption){legacyPilotOption.value='pilot_490_request';legacyPilotOption.textContent="Aylık 490 TL'lik şirket özel pilotuyla ilgileniyorum"}
-const faqSection=document.querySelector('#sorular');if(faqSection){const pilotBanner=document.createElement('section');pilotBanner.style.cssText='margin:0 0 92px;padding:28px;border-radius:18px;background:#eaf2ff;border:1px solid #cfe0f5;display:flex;justify-content:space-between;gap:24px;align-items:center;flex-wrap:wrap';pilotBanner.innerHTML='<div><div class="section-label">Şirketinize özel pilot</div><h2 style="margin:5px 0">Genel liste yetmiyorsa, uygun fırsatları birlikte eleyelim.</h2><p style="margin:0;color:var(--muted)">Aylık 490 TL pilot fiyatı · Şimdi ödeme yok · Talep yeterli olursa başlatılacak.</p></div><a class="cta" href="pilot.html">Pilot kapsamını gör</a>';faqSection.before(pilotBanner)}
+$source = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'index.html')
+foreach ($needle in @('id="signup-form"', 'id="opportunities"', 'app.js', 'gizlilik.html')) {
+    if (-not $source.Contains($needle)) { throw "Missing site marker: $needle" }
+}
+foreach ($needle in @('campaign_source', 'campaign_id', 'landing_variant')) {
+    if (-not $source.Contains($needle)) { throw "Missing campaign attribution marker: $needle" }
+}
+if (-not $source.Contains('paid_alert_interest')) { throw 'Missing paid alert interest field' }
+$pilot = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'pilot.html')
+foreach ($needle in @('pilot_490_request', 'PILOT-490-V1', '490 TL', 'id="pilot-form"')) {
+    if (-not $pilot.Contains($needle)) { throw "Missing paid pilot marker: $needle" }
+}
+foreach ($needle in @('FAQPage', 'id="share-box"', 'modern-v2')) {
+    if (-not $source.Contains($needle)) { throw "Missing conversion marker: $needle" }
+}
+foreach ($legacyIcon in @('>⌁<', '>⌕<', '>≡<', '>ⓘ<')) {
+    if ($source.Contains($legacyIcon)) { throw "Legacy font icon remains: $legacyIcon" }
+}
+$manifest = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'site.webmanifest') | ConvertFrom-Json
+if (-not $manifest.icons -or $manifest.icons.Count -lt 1) { throw 'Web manifest has no application icon' }
+if (-not $source.Contains('assets/brand-mark.svg') -or -not $source.Contains('assets/icons.svg#')) { throw 'Brand or UI SVG system is not connected' }
 
-function setupOpportunitySlider(){const track=document.querySelector('.opportunity-track');const cards=[...track.querySelectorAll('.opportunity')];let current=0;const visible=()=>innerWidth<=850?1:2;function show(index){const max=Math.max(0,cards.length-visible());current=Math.max(0,Math.min(index,max));const cardWidth=cards[0]?.getBoundingClientRect().width||0;track.style.transform=`translateX(-${current*(cardWidth+16)}px)`}document.querySelector('.radar-prev').addEventListener('click',()=>show(current-1));document.querySelector('.radar-next').addEventListener('click',()=>show(current+1));addEventListener('resize',()=>show(current));show(0)}
-function daysLeft(deadline){return deadline?Math.ceil((new Date(deadline)-new Date())/86400000):null}
-function formatDate(value){return value?new Date(value).toLocaleDateString('tr-TR'):''}
-function renderCard(item){const days=daysLeft(item.deadline);const timing=days===null?'Dönemsel kontrol':days>=0?`${days} gün kaldı`:'Başvuru dönemi kapandı';const tags=item.tags.map(tag=>`<span class="tag">${escapeHtml(tag.replaceAll('-',' '))}</span>`).join('');const detail=`firsatlar/${encodeURIComponent(item.id)}.html`;const preRegistration=item.pre_registration_deadline?`<p><strong>Ön kayıt son günü:</strong> ${formatDate(item.pre_registration_deadline)}</p>`:'';return `<article class="opportunity"><div class="opportunity-top"><span class="org">${escapeHtml(item.organization)}</span><span class="timing">${timing}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.summary)}</p><details><summary>Bana uygun mu, ilk ne yapmalıyım?</summary>${preRegistration}<p><strong>Kimler için:</strong> ${escapeHtml(item.who_is_it_for)}</p><p><strong>İlk adım:</strong> ${escapeHtml(item.first_step)}</p></details><div class="tags">${tags}</div><a class="source" href="${detail}">Sade özeti aç →</a><br><a href="${encodeURI(item.source_url)}" target="_blank" rel="noopener">Resmî duyuru</a></article>`}
-fetch('data/opportunities.json').then(r=>{if(!r.ok)throw new Error();return r.json()}).then(data=>{const open=data.opportunities.filter(i=>i.status==='open'||i.status==='evergreen');document.querySelector('#opportunities').innerHTML=open.map(renderCard).join('');document.querySelector('#updated').textContent=`Son kontrol: ${new Date(data.updated_at).toLocaleDateString('tr-TR')}`;setupOpportunitySlider()}).catch(()=>{document.querySelector('#opportunities').innerHTML='<p>Fırsat listesi kısa süre içinde yeniden yüklenecek.</p>'});
+$automation = Join-Path $root 'automation/google-apps-script/Code.gs'
+if (-not (Test-Path -LiteralPath $automation)) { throw 'Missing Google Apps Script automation' }
+$automationSource = Get-Content -Raw -Encoding UTF8 -LiteralPath $automation
+foreach ($needle in @('setupDestekSinyali', 'processRegistrationEmails', 'sendWeeklyDigest', 'sendOwnerWeeklyReport', 'processUnsubscribeEmails', 'MailApp.getRemainingDailyQuota')) {
+    if (-not $automationSource.Contains($needle)) { throw "Missing automation marker: $needle" }
+}
+$manifestPath = Join-Path $root 'automation/google-apps-script/appsscript.json'
+$manifest = Get-Content -Raw -Encoding UTF8 -LiteralPath $manifestPath | ConvertFrom-Json
+if ($manifest.timeZone -ne 'Europe/Istanbul') { throw 'Invalid Apps Script timezone' }
+if ('https://mail.google.com/' -notin $manifest.oauthScopes) { throw 'Missing Gmail automation scope' }
 
-const shareUrl='https://akifemir81.github.io/desteksinyali/?ref=member&cid=SHARE-001';
-document.querySelector('#share-button').addEventListener('click',async()=>{const data={title:'DestekSinyali',text:'Güncel destekleri resmî kaynakları ve sade özetleriyle takip edebileceğin ücretsiz bir site.',url:shareUrl};if(navigator.share){try{await navigator.share(data);return}catch{}}location.href=`mailto:?subject=${encodeURIComponent('Güncel destekleri takip etmek için')}&body=${encodeURIComponent(data.text+'\n\n'+shareUrl)}`});
-fetch('config/site.json').then(r=>r.json()).then(config=>{const form=document.querySelector('#signup-form');const button=form.querySelector('button');const status=document.querySelector('#form-status');if(!config.contact_email){status.textContent='Kayıtlar henüz açılmadı.';return}button.disabled=false;form.addEventListener('submit',async event=>{event.preventDefault();button.disabled=true;status.textContent='Kaydınız gönderiliyor…';try{const response=await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(config.contact_email)}`,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});if(!response.ok)throw new Error();form.reset();status.textContent='Kaydınız alındı. Hoş geldiniz!';document.querySelector('#share-box').classList.add('show')}catch{status.innerHTML=`Şu anda gönderilemedi. <a href="mailto:${encodeURIComponent(config.contact_email)}">Bize e-posta gönderin.</a>`}finally{button.disabled=false}})});
+$digest = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'output/weekly-digest.md')
+$data = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
+foreach ($item in $data.opportunities) {
+    if ($item.status -in @('open','evergreen') -and -not $digest.Contains($item.title)) {
+        throw "Active opportunity absent from digest: $($item.id)"
+    }
+}
+
+Write-Output 'All checks passed.'
