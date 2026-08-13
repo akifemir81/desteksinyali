@@ -1,1 +1,2 @@
-detected_at,opportunity_id,severity,description,correction_sent_at,resolved_at
+date,company,contact_id,signal_type,score,verbatim_note,next_decision
+

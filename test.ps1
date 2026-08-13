@@ -1,49 +1,27 @@
 param(
-    [string]$OutputPath = "",
-    [switch]$FailOnError
+  [string]$CampaignFile = (Join-Path $PSScriptRoot '..\marketing\outreach.csv'),
+  [datetime]$AsOf = (Get-Date)
 )
+
 $ErrorActionPreference = 'Stop'
-$root = Split-Path -Parent $PSScriptRoot
-if (-not $OutputPath) { $OutputPath = Join-Path $root 'data/source-health.json' }
-$registry = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/sources.json') | ConvertFrom-Json
-$opportunities = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
-$targets = @()
-foreach ($source in $registry.sources) {
-    $targets += [pscustomobject]@{ id=$source.id; type='registry'; url=$source.url }
-}
-foreach ($opportunity in $opportunities.opportunities) {
-    $targets += [pscustomobject]@{ id=$opportunity.id; type='opportunity'; url=$opportunity.source_url }
-}
-$targets = @($targets | Sort-Object url -Unique)
-$results = @()
-
-foreach ($source in $targets) {
-    $checkedAt = [datetimeoffset]::Now.ToString('o')
-    $lastError = $null
-    $response = $null
-    foreach ($attempt in 1..2) {
-        try {
-            $response = Invoke-WebRequest -UseBasicParsing -Uri $source.url -Method Get -MaximumRedirection 5 -TimeoutSec 25 -Headers @{'User-Agent'='DestekSinyali/0.1 source-monitor'}
-            break
-        } catch {
-            $lastError = $_
-            if ($attempt -lt 2) { Start-Sleep -Seconds 2 }
-        }
-    }
-    if ($response) {
-        $results += [ordered]@{ id=$source.id; type=$source.type; url=$source.url; ok=($response.StatusCode -eq 200); status=[int]$response.StatusCode; checked_at=$checkedAt }
-    } else {
-        $status = if ($lastError.Exception.Response) { [int]$lastError.Exception.Response.StatusCode } else { 0 }
-        $results += [ordered]@{ id=$source.id; type=$source.type; url=$source.url; ok=$false; status=$status; checked_at=$checkedAt; error=$lastError.Exception.Message }
-    }
-}
-
-[ordered]@{ generated_at=[datetimeoffset]::Now.ToString('o'); sources=$results } |
-    ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $OutputPath -Encoding utf8
-Write-Output "Kaynak kontrolü tamamlandı: $($results.Count) kaynak"
-if ($FailOnError) {
-    $failed = @($results | Where-Object { -not $_.ok })
-    if ($failed.Count) {
-        throw "Erişilemeyen resmi bağlantı: $($failed[0].id) ($($failed[0].status)) $($failed[0].url)"
-    }
-}
+if (-not (Test-Path -LiteralPath $CampaignFile)) { throw "Campaign file not found: $CampaignFile" }
+$rows = @(Import-Csv -LiteralPath $CampaignFile)
+$allowed = @('research','ready','sent','replied','interviewed','followed_up','closed','do_not_contact')
+$bad = @($rows | Where-Object { $_.status -notin $allowed })
+if ($bad.Count -gt 0) { throw "Invalid status: $($bad[0].id) = $($bad[0].status)" }
+$duplicateIds = @($rows | Group-Object id | Where-Object Count -gt 1)
+if ($duplicateIds.Count -gt 0) { throw "Duplicate campaign id: $($duplicateIds[0].Name)" }
+$ready = @($rows | Where-Object status -eq 'ready')
+$followups = @($rows | Where-Object { $_.status -eq 'sent' -and $_.next_action_at -and ([datetime]$_.next_action_at) -le $AsOf })
+$replies = @($rows | Where-Object status -in @('replied','interviewed'))
+$interviews = @($rows | Where-Object status -eq 'interviewed')
+$paymentSignals = @($rows | Where-Object { $_.payment_intent -match '^(yes|evet|maybe|belki)$' })
+Write-Host "DestekSinyali campaign summary - $($AsOf.ToString('yyyy-MM-dd'))"
+Write-Host "Total targets: $($rows.Count)"
+Write-Host "Ready to send: $($ready.Count)"
+Write-Host "Follow-ups due: $($followups.Count)"
+Write-Host "Replies: $($replies.Count)"
+Write-Host "Interviews: $($interviews.Count)"
+Write-Host "Payment intent: $($paymentSignals.Count)"
+if ($ready.Count) { Write-Host "`nNext new contacts (daily max 3):"; $ready | Select-Object -First 3 id,company,channel,public_contact,personalization | Format-Table -AutoSize }
+if ($followups.Count) { Write-Host "`nFollow-ups due today:"; $followups | Select-Object id,company,channel,next_action_at | Format-Table -AutoSize }

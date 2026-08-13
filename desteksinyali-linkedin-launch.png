@@ -1,21 +1,68 @@
-id,name,company,role,channel,public_contact,source_url,personalization,status,contacted_at,next_action_at,replied_at,interviewed_at,pain_score,payment_intent,notes
-DS-001,,Makrops,Founder/Business Development,LinkedIn,,https://makrops.com/,Türkiye ve yurt dışındaki girişimlere ürün geliştirme hizmeti,research,,,,,,,Kişi adı doğrulanmadan gönderme
-DS-002,,TURUSA Development & Digital Agency,Founder/Business Development,LinkedIn,,https://turusa.com.tr/,Endüstriyel yazılım ve ABD lojistik hizmetlerini birlikte yürütmesi,research,,,,,,,LinkedIn şirket sayfası doğrulandı; doğru karar verici seçilmeden gönderme
-DS-003,,TURKSAAS Yazılım ve Mühendislik,Founder/Business Development,LinkedIn,,https://turksaas.com.tr/,Küçük ekiple sektörel bulut ve SaaS çözümleri geliştirmesi,research,,,,,,,LinkedIn şirket sayfasında ekip doğrulandı; rol doğrulanmadan gönderme
-DS-004,,Pusula Yazılım,Export/Sales,LinkedIn,,https://www.pusulayazilim.com.tr/,Birden fazla ülkeye yazılım sunması,research,,,,,,,Kişi adı doğrulanmadan gönderme
-DS-005,,DX Türkiye,Founder/Business Development,Email,hello@dxturkiye.com,https://dxturkiye.com/,SaaS ve dijital dönüşüm odağı,ready,,,,,,,Kamuya açık kurumsal adres; gönderim öncesi canlı siteyi kontrol et
-DS-006,,Dehasoft,Founder/Business Development,Email,info@dehasoft.com.tr,https://www.dehasoft.com.tr/hakkimizda/,B2B e-ticaret ve ERP entegrasyonları geliştirmesi,ready,,,,,,,Kamuya açık kurumsal adres 13.08.2026 tarihinde resmî sitede doğrulandı
-DS-007,,Lime Yazılım,Founder/Business Development,Email,hello@lime.com.tr,https://www.lime.com.tr/tr/contact,Konya Teknokent'te yazılım ve dijital büyüme çözümleri geliştirmesi,ready,,,,,,,Kamuya açık kurumsal adres 13.08.2026 tarihinde resmî sitede doğrulandı
-DS-008,,İstanbul Yazılım Şirketi,Founder/Business Development,Research,,https://www.istanbulyazilimsirketi.com.tr/hakkimizda/,B2B özel geliştirme ve e-ticaret çözümleri,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-009,,Jettel,Founder/Business Development,Research,,https://jettel.com.tr/hakkimizda,Bulut santral ve çağrı merkezi SaaS çözümleri,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-010,,İyazılım,Founder/Business Development,Research,,https://www.iyazilim.com/sayfa/hakkimizda,Türkiye ve global pazar için ölçeklenebilir yazılım hedefi,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-011,,Harmony ERP,Founder/Business Development,Research,,https://www.harmonyerp.com.tr/hakkimizda/,Bulut tabanlı SaaS ERP ürünü ve global rekabet odağı,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-012,,SA Yazılım,Founder/Business Development,Research,,https://www.sayazilim.com/hakkimizda,İşletmelere özel yazılım çözümleri,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-013,,Most Idea Yazılım,Founder/Business Development,Email,info@mostidea.com.tr,https://www.mostidea.com.tr/iletisim,17'den fazla ülkede yazılım projesi deneyimi,ready,,,,,,,Kamuya açık kurumsal adres 13.08.2026 tarihinde resmî sitede doğrulandı; ikinci dalga
-DS-014,,Logitera,Founder/Business Development,Research,,https://logitera.com.tr/hakkimizda/,Yerli iş yazılımları ve dijital dönüşüm hizmetleri,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-015,,Bilsag Bilişim,Founder/Business Development,Research,,https://www.bilsag.net/,Web mobil özel sistem ve SaaS çözümleri,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-016,,Pars Yazılım,Founder/Business Development,Email,info@parsyazilim.com,https://parsyazilim.com/iletisim,ABD Hollanda ve Türkiye müşterilerine yazılım üretmesi,ready,,,,,,,Kamuya açık kurumsal adres 13.08.2026 tarihinde resmî sitede doğrulandı; ikinci dalga
-DS-017,,Reel Ajans,Founder/Business Development,Research,,https://reelajans.com/iletisim/,Bilişim tasarım ve yazılım çözümleri,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-018,,Yazılımer Teknoloji,Founder/Business Development,Research,,https://www.yazilimer.com/,E-ticaret kurumsal ve masaüstü yazılım hizmetleri,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-019,,Delta Dijital Ajans,Founder/Business Development,Research,,https://www.deltadijitalajans.com/,Yazılım e-ticaret ve dijital pazarlama hizmetleri,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
-DS-020,,KüçükOfis,Founder/Business Development,Research,,https://www.kucukofis.com/,Dijital ürün yazılım performans ve analiz odağı,research,,,,,,,Resmî site Ağustos 2026'da doğrulandı
+# DestekSinyali organik lansman planı
+
+## İlke
+
+İşletme/MERSİS ve İYS yükümlülükleri netleşmeden otomatik soğuk e-posta gönderilmez.
+İlk doğrulama; arama motoru trafiği, izinli topluluk paylaşımları ve kişisel sosyal
+hesaplarda açıkça ürün araştırması olduğu belirtilen içeriklerle yürütülür.
+
+## Ölçüm bağlantıları
+
+- LinkedIn: `https://akifemir81.github.io/desteksinyali/?ref=linkedin&cid=ORG-001`
+- Girişimci topluluğu: `https://akifemir81.github.io/desteksinyali/?ref=community&cid=ORG-002`
+- Kişisel paylaşım: `https://akifemir81.github.io/desteksinyali/?ref=personal&cid=ORG-003`
+
+## İlk paylaşım — problem
+
+**Başlık:** Destek duyurularını takip etmek neden bu kadar zor?
+
+KOBİ destekleri farklı kurum sayfalarında, uzun metinlerin içinde yayımlanıyor. Çoğu
+işletme “bize uygun mu, son gün ne, ilk adım ne?” sorularına hızlı cevap bulamıyor.
+
+Bu sorunu anlamak için DestekSinyali'nin ilk sürümünü hazırladık. Açık fırsatları
+resmî kaynağıyla birlikte sade bir özet halinde gösteriyor. Şimdilik ücretsiz ve erken
+aşamada. Deneyip anlaşılmayan yeri söylemeniz bizim için kayıt sayısından daha değerli:
+
+`https://akifemir81.github.io/desteksinyali/?ref=linkedin&cid=ORG-001`
+
+## İkinci paylaşım — somut değer
+
+**Başlık:** “Bana uygun mu?” kısmını kısa cevaplıyoruz
+
+Bir destek duyurusunda önce şu dört bilgiyi arıyoruz:
+
+1. Kim başvurabilir?
+2. Son tarih ne?
+3. Ön kayıt gerekiyor mu?
+4. İlk yapılacak iş ne?
+
+DestekSinyali bu bilgileri resmî bağlantıyı gizlemeden tek kartta topluyor. Şu an
+radarda iki açık TÜBİTAK çağrısı var. Haftalık özeti ücretsiz alabilirsiniz:
+
+`https://akifemir81.github.io/desteksinyali/?ref=community&cid=ORG-002`
+
+## Üçüncü paylaşım — geri bildirim
+
+**Başlık:** Küçük işletmeler destekleri nasıl takip ediyor?
+
+Bir işletme sahibi, kurucu veya iş geliştirme sorumlusuysanız dört kısa soruya yazılı
+yanıt arıyoruz:
+
+- Destekleri bugün nereden takip ediyorsunuz?
+- En zor kısım bulmak mı, uygunluğu anlamak mı?
+- Haftalık kısa bir özet işinize yarar mı?
+- Şirketinize özel anlık uyarı için ödeme düşünür müsünüz?
+
+Ürün henüz doğrulama aşamasında; destek kazandırma veya danışmanlık vaadi yok.
+
+`https://akifemir81.github.io/desteksinyali/?ref=personal&cid=ORG-003`
+
+## Yedi günlük yayın sırası
+
+- Gün 1: İlk paylaşım.
+- Gün 3: İkinci paylaşım.
+- Gün 5: Üçüncü paylaşım.
+- Gün 7: Kayıt, nitelikli yanıt ve ücretli alarm ilgisini değerlendirme.
+
+Her topluluğun tanıtım kuralları paylaşım öncesinde okunur. Aynı metin birden fazla
+gruba arka arkaya gönderilmez; yorumlarda destek kazanma vaadi verilmez.

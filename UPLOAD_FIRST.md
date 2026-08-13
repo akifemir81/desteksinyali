@@ -1,15 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://akifemir81.github.io/desteksinyali/</loc>
-    <lastmod>2026-08-13</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://akifemir81.github.io/desteksinyali/gizlilik.html</loc>
-    <lastmod>2026-08-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-</urlset>
+{
+  "name": "DestekSinyali",
+  "short_name": "DestekSinyali",
+  "start_url": "/desteksinyali/",
+  "display": "standalone",
+  "background_color": "#f4f7fa",
+  "theme_color": "#0c2238",
+  "icons": []
+}

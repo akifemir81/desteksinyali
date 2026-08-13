@@ -1,18 +1,15 @@
-<!doctype html>
-<html lang="tr"><head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="DestekSinyali fırsatları nasıl buluyor, doğruluyor ve sadeleştiriyor? İzlediğimiz kaynakları ve yayın ilkelerimizi inceleyin.">
-  <meta name="robots" content="index,follow"><meta name="theme-color" content="#0c2238">
-  <link rel="canonical" href="https://akifemir81.github.io/desteksinyali/yontemimiz.html">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><title>Yöntemimiz — DestekSinyali</title>
-  <style>body{margin:0;background:#f4f7fa;color:#0c2238;font:16px/1.7 system-ui}main{width:min(820px,calc(100% - 36px));margin:45px auto}.back{font-weight:800;text-decoration:none}.card{margin-top:24px;padding:clamp(28px,6vw,56px);border:1px solid #dfe7ef;border-radius:24px;background:#fff;box-shadow:0 20px 60px #0c223812}h1{margin:.2em 0;font-size:clamp(40px,7vw,64px);line-height:1.05;letter-spacing:-.05em}h2{margin-top:34px}p,li{color:#52697e}.sources{display:grid;gap:10px;margin:22px 0}.source{padding:15px 17px;border-radius:12px;background:#eef4fb}.source a{color:#0d4eb3;font-weight:800}.note{padding:18px;border-left:4px solid #28c1c8;background:#eefafa}footer{margin-top:30px;color:#607286;font-size:13px}</style>
-</head><body><main><a class="back" href="./">← Ana sayfaya dön</a><article class="card">
-  <div>ŞEFFAFLIK</div><h1>Bilgiyi nasıl hazırlıyoruz?</h1>
-  <p>DestekSinyali, farklı kurumlarda yayımlanan fırsatları tek yerde görmenizi kolaylaştıran bağımsız bir bilgi hizmetidir. Bir kamu kurumu veya başvuru danışmanı değildir.</p>
-  <h2>1. Yalnızca resmî kaynağı esas alıyoruz</h2><p>Bir fırsatı yayımlamadan önce duyuru bağlantısının ilgili kamu kurumuna ait olduğunu kontrol ediyoruz. Blog yazıları ve sosyal medya paylaşımları tek başına kaynak kabul edilmez.</p>
-  <div class="sources"><div class="source"><a href="https://tubitak.gov.tr/tr/duyuru" target="_blank" rel="noopener">TÜBİTAK duyuruları</a></div><div class="source"><a href="https://www.kosgeb.gov.tr/site/tr/genel/liste/2/duyurular" target="_blank" rel="noopener">KOSGEB duyuruları</a></div><div class="source"><a href="https://ticaret.gov.tr/destekler" target="_blank" rel="noopener">T.C. Ticaret Bakanlığı destekleri</a></div></div>
-  <h2>2. Kritik bilgileri ayrı ayrı kontrol ediyoruz</h2><ul><li>Başvuruya kimlerin katılabileceği</li><li>Son başvuru ve varsa ön kayıt tarihi</li><li>Başvurunun açık olup olmadığı</li><li>Resmî duyuru bağlantısının çalışıp çalışmadığı</li></ul>
-  <h2>3. Yorumu kaynaktan ayırıyoruz</h2><p>Kısa özet ve “ilk adım” bölümü, uzun çağrı metnini anlamayı kolaylaştırır. Nihai uygunluk kararı değildir. Her fırsatta resmî duyuru bağlantısını açıkça gösteririz.</p>
-  <h2>4. Güncelliği görünür tutuyoruz</h2><p>Her kayıtta son kontrol tarihini yayımlarız. Tarihi geçmiş veya doğrulanamayan fırsatları açık fırsat listesinden çıkarmayı hedefleriz.</p>
-  <p class="note"><strong>Bir hata mı gördünüz?</strong><br>Kaynak bağlantısıyla birlikte <a href="mailto:desteksinyali@gmail.com?subject=DestekSinyali%20bilgi%20düzeltme">desteksinyali@gmail.com</a> adresine bildirebilirsiniz.</p>
-</article><footer>Son güncelleme: 13 Ağustos 2026 · DestekSinyali</footer></main></body></html>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://akifemir81.github.io/desteksinyali/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://akifemir81.github.io/desteksinyali/gizlilik.html</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>

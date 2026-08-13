@@ -1,71 +1,49 @@
 param(
     [string]$OutputPath = "",
-    [int]$DelayMilliseconds = 1200
+    [switch]$FailOnError
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-if (-not $OutputPath) { $OutputPath = Join-Path $root 'output/candidates.json' }
-$outputDir = Split-Path -Parent $OutputPath
-if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir | Out-Null }
-
+if (-not $OutputPath) { $OutputPath = Join-Path $root 'data/source-health.json' }
 $registry = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/sources.json') | ConvertFrom-Json
-$published = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
-$keywords = @('destek', 'cagri', 'çağrı', 'hibe', 'teşvik', 'tesvik', 'ihracat', 'ar-ge', 'arge', 'yapay zeka', 'yapay zekâ', 'kobi')
-$candidates = @()
-$failures = @()
-$seen = @{}
-foreach ($item in $published.opportunities) {
-    if ($item.source_url) { $seen[$item.source_url.TrimEnd('/').ToLowerInvariant()] = $true }
+$opportunities = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
+$targets = @()
+foreach ($source in $registry.sources) {
+    $targets += [pscustomobject]@{ id=$source.id; type='registry'; url=$source.url }
 }
+foreach ($opportunity in $opportunities.opportunities) {
+    $targets += [pscustomobject]@{ id=$opportunity.id; type='opportunity'; url=$opportunity.source_url }
+}
+$targets = @($targets | Sort-Object url -Unique)
+$results = @()
 
-foreach ($source in ($registry.sources | Sort-Object priority)) {
-    try {
-        $response = Invoke-WebRequest -UseBasicParsing -Uri $source.url -Method Get -MaximumRedirection 5 -TimeoutSec 30 -Headers @{
-            'User-Agent' = 'DestekSinyali/0.1 (+public-source-monitor; one-request-per-source)'
+foreach ($source in $targets) {
+    $checkedAt = [datetimeoffset]::Now.ToString('o')
+    $lastError = $null
+    $response = $null
+    foreach ($attempt in 1..2) {
+        try {
+            $response = Invoke-WebRequest -UseBasicParsing -Uri $source.url -Method Get -MaximumRedirection 5 -TimeoutSec 25 -Headers @{'User-Agent'='DestekSinyali/0.1 source-monitor'}
+            break
+        } catch {
+            $lastError = $_
+            if ($attempt -lt 2) { Start-Sleep -Seconds 2 }
         }
-        $linkPattern = '(?is)<a\b[^>]*?href\s*=\s*["''](?<href>[^"'']+)["''][^>]*>(?<text>.*?)</a>'
-        foreach ($match in [regex]::Matches([string]$response.Content, $linkPattern)) {
-            $rawText = [regex]::Replace($match.Groups['text'].Value, '<[^>]+>', ' ')
-            $title = [System.Net.WebUtility]::HtmlDecode($rawText).Trim()
-            $title = [regex]::Replace($title, '\s+', ' ')
-            $href = [System.Net.WebUtility]::HtmlDecode($match.Groups['href'].Value)
-            if ([string]::IsNullOrWhiteSpace($title) -or [string]::IsNullOrWhiteSpace($href)) { continue }
-            $normalized = $title.ToLowerInvariant()
-            $matched = @($keywords | Where-Object { $normalized.Contains($_) })
-            if ($matched.Count -eq 0) { continue }
-            try { $absolute = [uri]::new([uri]$source.url, $href) } catch { continue }
-            if ($absolute.Scheme -ne 'https') { continue }
-            $pathAllowed = $false
-            foreach ($pathPattern in $source.include_path_patterns) {
-                if ($absolute.AbsolutePath -match $pathPattern) { $pathAllowed = $true; break }
-            }
-            if (-not $pathAllowed) { continue }
-            $key = $absolute.AbsoluteUri.TrimEnd('/').ToLowerInvariant()
-            if ($seen.ContainsKey($key)) { continue }
-            $seen[$key] = $true
-            $candidates += [ordered]@{
-                title = $title
-                url = $absolute.AbsoluteUri
-                source_id = $source.id
-                organization = $source.organization
-                matched_keywords = $matched
-                discovered_at = [datetimeoffset]::Now.ToString('o')
-                review_status = 'pending'
-            }
-        }
-    } catch {
-        $failures += [ordered]@{ source_id=$source.id; error=$_.Exception.Message }
     }
-    Start-Sleep -Milliseconds $DelayMilliseconds
+    if ($response) {
+        $results += [ordered]@{ id=$source.id; type=$source.type; url=$source.url; ok=($response.StatusCode -eq 200); status=[int]$response.StatusCode; checked_at=$checkedAt }
+    } else {
+        $status = if ($lastError.Exception.Response) { [int]$lastError.Exception.Response.StatusCode } else { 0 }
+        $results += [ordered]@{ id=$source.id; type=$source.type; url=$source.url; ok=$false; status=$status; checked_at=$checkedAt; error=$lastError.Exception.Message }
+    }
 }
 
-[ordered]@{
-    generated_at = [datetimeoffset]::Now.ToString('o')
-    candidate_count = $candidates.Count
-    published_urls_skipped = $published.opportunities.Count
-    candidates = $candidates
-    failures = $failures
-} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath $OutputPath -Encoding UTF8
-
-Write-Output "Candidate scan complete: $($candidates.Count) candidates, $($failures.Count) failures"
-if ($failures.Count -eq $registry.sources.Count) { exit 2 }
+[ordered]@{ generated_at=[datetimeoffset]::Now.ToString('o'); sources=$results } |
+    ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $OutputPath -Encoding utf8
+Write-Output "Kaynak kontrolü tamamlandı: $($results.Count) kaynak"
+if ($FailOnError) {
+    $failed = @($results | Where-Object { -not $_.ok })
+    if ($failed.Count) {
+        throw "Erişilemeyen resmi bağlantı: $($failed[0].id) ($($failed[0].status)) $($failed[0].url)"
+    }
+}

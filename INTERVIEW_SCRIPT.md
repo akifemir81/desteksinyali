@@ -1,58 +1,49 @@
-# DestekSinyali — ilk talep doğrulama kampanyası
+# Kampanya mesajları
 
-## Amaç
+## E-posta — ilk temas
 
-İlk kampanyanın amacı yüksek gönderim sayısı değil, şu üç soruyu kanıtlamaktır:
+**Konu:** Destekleri nasıl takip ediyorsunuz?
 
-1. İşletmeler destekleri takip etmekte gerçekten zorlanıyor mu?
-2. Kısa ve kaynaklı bir haftalık özet istiyorlar mı?
-3. Şirketlerine özel anlık bildirim için ödeme düşünürler mi?
+Merhaba [isim],
 
-## İlk hedef profil
+[şirket] ekibinin [resmî siteden görülen kısa ayrıntı] üzerine çalıştığını
+gördüm. Küçük işletmelerin kendilerine uygun destekleri zamanında bulup
+bulamadığını araştırıyorum.
 
-- Türkiye'de faaliyet gösteren küçük yazılım, SaaS veya dijital hizmet şirketi,
-- açık bir şirket sitesi ve doğrulanabilir faaliyet alanı,
-- kurucu, iş geliştirme, satış veya ihracat sorumlusu,
-- Ar-Ge, ihracat, yapay zekâ ya da yurt dışı büyüme ihtimali.
+DestekSinyali, uzun kurum duyurularını “bana uygun mu, son gün ne zaman, ilk ne
+yapmalıyım?” şeklinde özetleyen erken aşama bir ürün. Satış görüşmesi değil;
+deneyiminizi anlamak için dört kısa soru sormak istiyorum. 12 dakikalık bir
+görüşme mümkün olur mu?
 
-Bu yalnızca ilk doğrulama segmentidir; ürünün kalıcı sınırı değildir.
+https://akifemir81.github.io/desteksinyali/
 
-## Kanal sırası
+Teşekkürler,
+DestekSinyali
 
-1. Kamuya açık kurumsal e-posta varsa kişisel ve tekil e-posta.
-2. Kurucu/iş geliştirme kişisi belliyse kişisel LinkedIn mesajı.
-3. Yalnızca iletişim formu varsa form; otomatik/toplu gönderim yok.
+## LinkedIn — ilk temas
 
-Satın alınmış liste, kazınmış kişisel adres ve toplu gönderim kullanılmaz.
+Merhaba [isim], [şirket] ekibinin [somut ayrıntı] çalışması nedeniyle size
+ulaşıyorum. Küçük işletmelerin destekleri nasıl takip ettiğini araştırıyorum.
+Satış yapmadan, yalnızca dört kısa soru için 12 dakika ayırmanız mümkün mü?
+Yazılı cevap da olur: https://akifemir81.github.io/desteksinyali/
 
-## Gönderim temposu
+## Tek hatırlatma — 4 gün sonra
 
-- İlk gün en fazla 3 yeni temas.
-- Sonraki günler, cevap kalitesine göre en fazla 5 yeni temas.
-- Cevap yoksa 4 gün sonra yalnızca bir hatırlatma.
-- İkinci yanıtsız mesajdan sonra kişi kapatılır.
-- Olumsuz cevap veren veya iletişim istemeyen kişi tekrar aranmaz.
+Merhaba [isim], araştırma davetimi gözden kaçmış olma ihtimaline karşı yalnızca
+bir kez hatırlatıyorum. Görüşme uygun değilse “destekleri düzenli takip
+ediyoruz / etmiyoruz” şeklinde tek cümlelik cevap da çok yardımcı olur.
+Teşekkürler.
 
-## Mesaj ilkeleri
+## Olumlu cevap sonrası dört soru
 
-- İlk mesaj 90 kelimenin altında kalır.
-- Şirket hakkında yalnızca resmî sitesinde görülen tek bir gerçek kullanılır.
-- “Destek kazandırıyoruz” veya “başvurunuzu yapıyoruz” denmez.
-- Görüşme talebi 12 dakika ve dört soru olarak açıkça belirtilir.
-- Bağlantı yalnızca canlı site son kontrolden geçtiyse eklenir.
+1. Şirketinize uygun destekleri bugün nereden ve ne sıklıkla takip ediyorsunuz?
+2. Son bir yılda geç fark ettiğiniz veya anlamakta zorlandığınız bir destek oldu mu?
+3. Bir bildirimin yararlı olması için mutlaka hangi üç bilgiyi içermesi gerekir?
+4. Şirketinize özel anlık bildirim için ödeme yapmayı düşünür müsünüz? Neden?
 
-## Başarı eşiği
+## Görüşme sonrası
 
-20 doğru temastan sonra: en az 5 anlamlı cevap, 5 problem görüşmesi, 10 ücretsiz
-özet kaydı ve 3 kişisel alarm ödeme niyeti aranır. Bu sinyaller oluşmadan ücretli
-altyapı veya reklam bütçesi açılmaz.
-
-## Günlük çalışma
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/campaign_queue.ps1
-```
-
-Durumlar: `research`, `ready`, `sent`, `replied`, `interviewed`, `followed_up`,
-`closed`, `do_not_contact`.
+Teşekkür ederim. Özellikle “[kişinin kullandığı ifade]” notunu ürün kararlarına
+ekledim. İsterseniz ücretsiz haftalık özete buradan katılabilirsiniz:
+https://akifemir81.github.io/desteksinyali/#erken-erisim
 

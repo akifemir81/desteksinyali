@@ -1,16 +1,29 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-$out = Join-Path $root 'public'
+$public = Join-Path $root 'public'
+$htmlFiles = @(Get-ChildItem -LiteralPath $public -Recurse -Filter '*.html' -File)
 
-if (Test-Path -LiteralPath $out) { Remove-Item -LiteralPath $out -Recurse -Force }
-New-Item -ItemType Directory -Path $out | Out-Null
-New-Item -ItemType Directory -Path (Join-Path $out 'data') | Out-Null
-New-Item -ItemType Directory -Path (Join-Path $out 'config') | Out-Null
+foreach ($file in $htmlFiles) {
+    $html = Get-Content -Raw -Encoding UTF8 -LiteralPath $file.FullName
+    if ($html -notmatch '<html[^>]+lang="tr"') { throw "Missing Turkish language marker: $($file.FullName)" }
+    foreach ($imageMatch in [regex]::Matches($html, '<img\b[^>]*>')) {
+        if ($imageMatch.Value -notmatch '\balt="[^"]*"') { throw "Image without alt text: $($file.FullName)" }
+    }
+    foreach ($blankMatch in [regex]::Matches($html, '<a\b[^>]*target="_blank"[^>]*>')) {
+        if ($blankMatch.Value -match '\bhref="https?://' -and $blankMatch.Value -notmatch '\brel="[^"]*noopener') { throw "Unsafe external target blank link: $($file.FullName)" }
+    }
+    foreach ($fieldMatch in [regex]::Matches($html, '<(input|select|textarea)\b[^>]*\bid="([^"]+)"[^>]*>')) {
+        if ($fieldMatch.Value -match '\btype="hidden"') { continue }
+        $id = [regex]::Escape($fieldMatch.Groups[2].Value)
+        if ($html -notmatch ('<label\b[^>]*for="' + $id + '"')) { throw "Form field without label: $($file.FullName) #$id" }
+    }
+    foreach ($assetMatch in [regex]::Matches($html, '(?:href|src)="([^"]+)"')) {
+        $reference = $assetMatch.Groups[1].Value.Split('?')[0].Split('#')[0]
+        if (-not $reference -or $reference -match '^(https?:|mailto:|tel:|data:)') { continue }
+        $decoded = [uri]::UnescapeDataString($reference)
+        $target = Join-Path $file.DirectoryName $decoded
+        if (-not (Test-Path -LiteralPath $target)) { throw "Broken internal reference: $reference in $($file.FullName)" }
+    }
+}
 
-Copy-Item -Path (Join-Path $root 'site/*') -Destination $out -Recurse
-Copy-Item -LiteralPath (Join-Path $root 'data/opportunities.json') -Destination (Join-Path $out 'data/opportunities.json')
-Copy-Item -LiteralPath (Join-Path $root 'config/site.json') -Destination (Join-Path $out 'config/site.json')
-
-& (Join-Path $PSScriptRoot 'generate_opportunity_pages.ps1') -OutputRoot $out
-
-Write-Output "Site paketi hazır: $out"
+Write-Output "Site quality audit passed: $($htmlFiles.Count) HTML files"

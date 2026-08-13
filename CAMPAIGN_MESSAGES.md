@@ -1,62 +1,32 @@
-# DestekSinyali — başlangıç stratejisi
+# Kişisel alarm fiyat doğrulaması
 
-## Müşteri
+## Ücretsiz ve ücretli değer ayrımı
 
-İlk müşteri segmenti 1-20 çalışanlı yazılım ajansları, SaaS girişimleri ve
-dijital hizmet ihracatı yapan küçük şirketlerdir. Bu gruba çevrimiçi ulaşmak
-kolaydır; kaçırılan bir desteğin ekonomik değeri de abonelik ücretinden çok
-daha yüksektir.
+Piyasada genel destek listesi ve ücretsiz bilgilendirme sunan alternatifler vardır.
+Bu nedenle DestekSinyali genel fırsat özetini ücretsiz tutar. Ücretli değer şunlardan
+oluşur:
 
-## Sorun
+- şirket profiline göre eşleştirme,
+- uygun fırsatta haftalık bülteni beklemeden uyarı,
+- son tarih yaklaşırken hatırlatma,
+- ilgisiz duyuruların elenmesi.
 
-Resmi bilgiler farklı kurumlarda, uzun metinler ve ek PDF'ler halinde yayılır.
-Kullanıcı üç kısa cevap ister:
+## İlk fiyat hipotezi
 
-- Bana uygun mu?
-- Ne kadar zaman kaldı?
-- İlk yapmam gereken nedir?
+Somut pilot teklif aylık **490 TL** üzerinden doğrulanır. Kapsam; şirket profiline
+göre eşleştirme, kritik tarih hatırlatması ve ilk adım/belge kontrol listesidir.
+Talep aşamasında ödeme alınmaz.
 
-## Ürün
+## Karar kapısı
 
-Her fırsat için kaynak bağlantısı, uygunluk özeti, son tarih, gerekli ilk adım
-ve güven notu gösterilir. Sistem hukuki veya mali danışmanlık iddiasında
-bulunmaz; kullanıcıyı daima resmi kaynağa yönlendirir.
+- En az 100 nitelikli ziyaret veya 30 günlük test oluşmadan sonuç yorumlanmaz.
+- En az 3 kişi `pilot_490_request` göndermeden ödeme altyapısı kurulmaz.
+- Form cevabı gerçek ödeme yerine geçmez; sonraki aşamada açık şartlarla küçük bir
+  ücretli pilot teklifi yapılır.
+- Üçten az ciddi talep varsa yeni özellik geliştirilmez ve gelir modeli değiştirilir.
 
-## Gelir merdiveni
+## Ölçüm
 
-1. Ücretsiz: haftalık genel özet.
-2. Pro: şirket profiline göre eşleşme ve anlık bildirim.
-3. Takım: birden fazla şirket/proje, ekip içi görev ve takvim aktarımı.
-
-Fiyat henüz belirlenmeyecek. Önce görüşmelerde “bu bildirimi zamanında almak
-size ne kazandırırdı?” sorusunun cevabı ölçülecek.
-
-## Sıfır maliyet mimarisi
-
-- Statik arayüz: HTML/CSS/JavaScript.
-- Veri: sürüm kontrollü JSON.
-- Toplama: Python standart kütüphanesi ve zamanlanmış CI işi.
-- Barındırma: ücretsiz statik hosting.
-- İlk kayıt toplama: ücretsiz form sağlayıcısı veya kullanıcının mevcut formu.
-- İlk bültenler: elle onaylanan taslak; talep kanıtlanınca otomasyon.
-
-Üçüncü taraf ücretsiz planları değişebileceğinden servis seçimi hesap açılacağı
-gün yeniden kontrol edilecektir.
-
-## Doğrulama eşikleri
-
-- 20 doğru kişiye erişim.
-- En az 10 bekleme listesi kaydı.
-- En az 5 kısa müşteri görüşmesi.
-- En az 3 kişinin kişisel alarm için ödeme niyeti belirtmesi.
-
-Bu eşikler yakalanmazsa ürün büyütülmez; mesaj veya segment değiştirilir.
-
-## Riskler
-
-- Yanlış/eskimiş bilgi: yayın zamanı, kaynak URL'si ve son kontrol zamanı zorunlu.
-- Kaynak sayfası değişikliği: toplayıcı hata verdiğinde eski kayıt yayımlamaz.
-- Spam: açık izin, kolay çıkış ve düşük gönderim sıklığı.
-- Mevzuat: ürün başvuru danışmanlığı değil, bilgi ve yönlendirme aracıdır.
-- Dağıtım: ilk kanal SEO değil, doğrudan hedef müşteri görüşmeleridir.
-
+FormSubmit kaydındaki `paid_alert_interest`, `campaign_source` ve `campaign_id`
+alanları birlikte değerlendirilir. Böylece yalnızca fiyat niyeti değil, hangi
+kampanya mesajının nitelikli talep getirdiği görülür.

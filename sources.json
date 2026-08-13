@@ -1,36 +1,26 @@
-name: Deploy DestekSinyali
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
-jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Validate and test site
-        shell: pwsh
-        run: ./scripts/test.ps1
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: public
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+﻿{
+    "generated_at":  "2026-08-13T08:25:00.2117642+03:00",
+    "sources":  [
+                    {
+                        "id":  "tubitak-duyurular",
+                        "ok":  false,
+                        "status":  0,
+                        "checked_at":  "2026-08-13T08:25:00.1314887+03:00",
+                        "error":  "Uzak sunucuya bağlanılamıyor"
+                    },
+                    {
+                        "id":  "ticaret-hizmet-destekleri",
+                        "ok":  false,
+                        "status":  0,
+                        "checked_at":  "2026-08-13T08:25:00.1810610+03:00",
+                        "error":  "Uzak sunucuya bağlanılamıyor"
+                    },
+                    {
+                        "id":  "kosgeb-duyurular",
+                        "ok":  false,
+                        "status":  0,
+                        "checked_at":  "2026-08-13T08:25:00.1810610+03:00",
+                        "error":  "Uzak sunucuya bağlanılamıyor"
+                    }
+                ]
+}

@@ -1,67 +1,19 @@
-# DestekSinyali
+# Konu: DestekSinyali erken erişimine hoş geldin
 
-Türkiye'deki yazılım ajansları, küçük teknoloji şirketleri ve dijital hizmet
-ihracatçıları için resmi teşvik ve destek radarı.
+Merhaba,
 
-## Ürün tezi
+DestekSinyali erken erişimine katıldığın için teşekkürler. Açık destekleri sade,
+kaynak bağlantılı bir özet halinde göndereceğiz.
 
-Hedef kullanıcı desteklerin varlığından çok, hangisinin kendisine uyduğunu ve
-son başvuru tarihini kaçırmamayı önemsiyor. İlk sürüm bu nedenle kapsamlı bir
-haber portalı değil; az sayıda resmi kaynaktan gelen fırsatları sadeleştiren bir
-filtre ve bildirim ürünüdür.
+İlk özeti hazırlarken tek bir cevap bize yardımcı olur:
 
-## İlk sürümü çalıştırma
+**Şirketiniz şu anda yurt dışına ürün veya hizmet satıyor mu?**
 
-Bu depo bağımlılıksız statik bir site olarak başlar. Dağıtılabilir `public`
-klasörünü üretmek için aşağıdaki komutu çalıştırın. Veriler tarayıcı tarafından
-alındığı için siteyi doğrudan `file://` ile değil bir statik sunucuda görüntüleyin.
+- Henüz değil
+- İlk müşterileri arıyoruz
+- Düzenli ihracat yapıyoruz
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/build.ps1
-```
+DestekSinyali mali veya hukuki danışmanlık değildir. Her fırsatta resmî kaynak
+bağlantısını paylaşırız.
 
-Veri doğrulama komutu (Windows/PowerShell, ek bağımlılık gerekmez):
-
-```powershell
-./scripts/validate_data.ps1
-```
-
-Resmî kaynakların erişilebilirliğini kontrol etmek için:
-
-```powershell
-./scripts/check_sources.ps1
-```
-
-Yeni duyuru adaylarını inceleme kuyruğuna almak için:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/collect_candidates.ps1
-```
-
-Tüm yerel kontroller:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/test.ps1
-```
-
-Kayıt formu hazır olduğunda bağlantıyı `config/site.json` içindeki
-`waitlist_url` alanına yazmak yeterlidir. GitHub Pages dağıtım iş akışı
-`.github/workflows/deploy-pages.yml` dosyasında hazırdır.
-
-## Yol haritası
-
-1. Landing page ve bekleme listesiyle 20 hedef kullanıcıya ulaş.
-2. En az 5 görüşme ve 10 kayıt olmadan ücretli altyapı geliştirme.
-3. Resmi kaynaklardan günlük veri toplama ve tekrarları eleme.
-4. Haftalık ücretsiz özet gönderme.
-5. Kullanıcı başına filtre ve anlık alarmı ücretli katman olarak açma.
-
-Stratejik kararlar için [docs/STRATEGY.md](docs/STRATEGY.md), günlük görevler
-için [docs/EVENING_CHECKLIST.md](docs/EVENING_CHECKLIST.md) dosyasına bakın.
-
-## Ücretsiz Gmail otomasyonu
-
-FormSubmit kayıtlarını abone tablosuna aktaran, hoş geldin mesajını ve haftalık
-bülteni gönderen Google Apps Script paketi `automation/google-apps-script`
-klasöründedir. Tek seferlik kurulum için
-[docs/FINAL_SETUP.md](docs/FINAL_SETUP.md) belgesini izleyin.
+— DestekSinyali

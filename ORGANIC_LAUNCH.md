@@ -1,60 +1,58 @@
-# DestekSinyali sıfır bütçeli büyüme sistemi
+# DestekSinyali — ilk talep doğrulama kampanyası
 
-## Konumlandırma
+## Amaç
 
-DestekSinyali bir başvuru danışmanlığı değil; fırsatı bulma ve ilk eleme katmanıdır.
-Ana vaat: **“Açık destekleri, son tarihleri ve ilk adımı resmî kaynağıyla birlikte görün.”**
+İlk kampanyanın amacı yüksek gönderim sayısı değil, şu üç soruyu kanıtlamaktır:
 
-## Kanal önceliği
+1. İşletmeler destekleri takip etmekte gerçekten zorlanıyor mu?
+2. Kısa ve kaynaklı bir haftalık özet istiyorlar mı?
+3. Şirketlerine özel anlık bildirim için ödeme düşünürler mi?
 
-1. Arama motoru: Her fırsat için ayrı ve güncel sayfa.
-2. LinkedIn: Haftalık radar ve tek fırsat açıklamaları.
-3. İzin veren girişimci/KOBİ toplulukları: Değer odaklı kaynak paylaşımı.
-4. Mevcut aboneler: Haftalık özet ve kayıt sonrası doğal paylaşım.
-5. Birebir görüşmeler: Yalnızca problem doğrulamak için, toplu gönderim yapılmadan.
+## İlk hedef profil
 
-Ücretli reklam, en az 30 organik kayıt ve kayıtların en az %20’sinde ücretli alarm ilgisi
-görülmeden açılmaz. Reklam erken açılırsa talep yerine yalnızca tıklama satın alınmış olur.
+- Türkiye'de faaliyet gösteren küçük yazılım, SaaS veya dijital hizmet şirketi,
+- açık bir şirket sitesi ve doğrulanabilir faaliyet alanı,
+- kurucu, iş geliştirme, satış veya ihracat sorumlusu,
+- Ar-Ge, ihracat, yapay zekâ ya da yurt dışı büyüme ihtimali.
 
-## Dört haftalık yayın düzeni
+Bu yalnızca ilk doğrulama segmentidir; ürünün kalıcı sınırı değildir.
 
-| Gün | İçerik | Amaç |
-|---|---|---|
-| Pazartesi | Haftanın açık fırsatları | Kaydetme ve site ziyareti |
-| Çarşamba | Tek fırsatın “kimler için / ilk adım” özeti | Uzmanlık ve arama görünürlüğü |
-| Cuma | Kısa eğitim: ön kayıt, son tarih veya resmî kaynak kontrolü | Güven |
-| Pazar | Haftalık bülten | Geri dönüş ve alışkanlık |
+## Kanal sırası
 
-## İçerik kalıbı
+1. Kamuya açık kurumsal e-posta varsa kişisel ve tekil e-posta.
+2. Kurucu/iş geliştirme kişisi belliyse kişisel LinkedIn mesajı.
+3. Yalnızca iletişim formu varsa form; otomatik/toplu gönderim yok.
 
-Her paylaşım şu sırayı izler:
+Satın alınmış liste, kazınmış kişisel adres ve toplu gönderim kullanılmaz.
 
-1. Somut sorun veya tarih.
-2. Kimler için olduğuna dair tek cümle.
-3. Atılacak ilk adım.
-4. Resmî kaynak veya DestekSinyali detay sayfası.
-5. Garanti vermeyen, sade çağrı: “Kaydedebilir veya ilgili kişiye iletebilirsiniz.”
+## Gönderim temposu
 
-## Ölçülecek dönüşümler
+- İlk gün en fazla 3 yeni temas.
+- Sonraki günler, cevap kalitesine göre en fazla 5 yeni temas.
+- Cevap yoksa 4 gün sonra yalnızca bir hatırlatma.
+- İkinci yanıtsız mesajdan sonra kişi kapatılır.
+- Olumsuz cevap veren veya iletişim istemeyen kişi tekrar aranmaz.
 
-- Kaynak bazında kayıt: `campaign_source`
-- İçerik bazında kayıt: `campaign_id`
-- Ücretsiz özet ilgisi
-- Ücretli kişisel alarm ilgisi
-- Kayıt sonrası paylaşım kaynaklı kayıt: `ref=member`
-- Bültene cevap ve abonelikten ayrılma
+## Mesaj ilkeleri
 
-## Karar kuralları
+- İlk mesaj 90 kelimenin altında kalır.
+- Şirket hakkında yalnızca resmî sitesinde görülen tek bir gerçek kullanılır.
+- “Destek kazandırıyoruz” veya “başvurunuzu yapıyoruz” denmez.
+- Görüşme talebi 12 dakika ve dört soru olarak açıkça belirtilir.
+- Bağlantı yalnızca canlı site son kontrolden geçtiyse eklenir.
 
-- 100 nitelikli ziyaret / 5 kayıttan az: başlık ve form teklifi değiştirilir.
-- 20 kayıt / 4 ücretli alarm ilgisinden az: ücretli özellik ertelenir.
-- Bir kanal üç paylaşımda kayıt üretmezse iki hafta durdurulur.
-- En çok kayıt üreten konu, bir sonraki haftanın fırsat açıklamasına dönüştürülür.
-- Abonelikten ayrılma %5’i aşarsa bülten sıklığı veya içerik uygunluğu yeniden incelenir.
+## Başarı eşiği
 
-## Yapılmayacaklar
+20 doğru temastan sonra: en az 5 anlamlı cevap, 5 problem görüşmesi, 10 ücretsiz
+özet kaydı ve 3 kişisel alarm ödeme niyeti aranır. Bu sinyaller oluşmadan ücretli
+altyapı veya reklam bütçesi açılmaz.
 
-- Sahte sayaç, sahte kullanıcı yorumu veya “son kontenjan” ifadesi kullanılmaz.
-- Resmî kurum logosu, kurumla ortaklık izlenimi verecek biçimde kullanılmaz.
-- Satın alınmış adres listesine toplu e-posta gönderilmez.
-- Kaynağı doğrulanmamış destek tutarı veya başarı vaadi paylaşılmaz.
+## Günlük çalışma
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/campaign_queue.ps1
+```
+
+Durumlar: `research`, `ready`, `sent`, `replied`, `interviewed`, `followed_up`,
+`closed`, `do_not_contact`.
+

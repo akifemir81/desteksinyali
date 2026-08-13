@@ -1,68 +1,21 @@
-# DestekSinyali organik lansman planı
+# 12 dakikalık müşteri görüşmesi
 
-## İlke
+Amaç ürünü övmek değil, gerçek davranışı öğrenmektir. Cevapları özetleyin;
+telefon ve e-posta gibi kişisel verileri depoya eklemeyin.
 
-İşletme/MERSİS ve İYS yükümlülükleri netleşmeden otomatik soğuk e-posta gönderilmez.
-İlk doğrulama; arama motoru trafiği, izinli topluluk paylaşımları ve kişisel sosyal
-hesaplarda açıkça ürün araştırması olduğu belirtilen içeriklerle yürütülür.
+1. Şirketiniz hangi dijital hizmeti veya yazılımı satıyor?
+2. Son bir yılda teşvik ya da destek araştırdınız mı? En son ne zaman?
+3. Bilgiyi nereden buldunuz, araştırma ne kadar sürdü?
+4. Uygun olduğunuzu düşündüğünüz halde kaçırdığınız bir fırsat oldu mu?
+5. En zor kısım hangisiydi: haberdar olmak, uygunluğu anlamak, belge hazırlamak?
+6. Size uygun fırsatlar tek e-postada gelse ne sıklıkta görmek isterdiniz?
+7. Anlık ve kişisel eşleşme için bugün ödeme yapar mıydınız? Neden?
+8. Ödeme yapacak olsaydınız hangi sonuç gerçekleşmiş olmalıydı?
 
-## Ölçüm bağlantıları
+## Görüşme sonrası puan
 
-- LinkedIn: `https://akifemir81.github.io/desteksinyali/?ref=linkedin&cid=ORG-001`
-- Girişimci topluluğu: `https://akifemir81.github.io/desteksinyali/?ref=community&cid=ORG-002`
-- Kişisel paylaşım: `https://akifemir81.github.io/desteksinyali/?ref=personal&cid=ORG-003`
+- Ağrı 0-5: Sorun ne kadar sık ve maliyetli?
+- Mevcut çözüm: Şu anda zaman veya para harcıyor mu?
+- Ödeme niyeti: Hayır / belki / fiyat soruyor / pilot istiyor.
+- Kullanılan kelimeler: Landing page metninde aynen kullanılabilecek kısa ifadeler.
 
-## İlk paylaşım — problem
-
-**Başlık:** Destek duyurularını takip etmek neden bu kadar zor?
-
-KOBİ destekleri farklı kurum sayfalarında, uzun metinlerin içinde yayımlanıyor. Çoğu
-işletme “bize uygun mu, son gün ne, ilk adım ne?” sorularına hızlı cevap bulamıyor.
-
-Bu sorunu anlamak için DestekSinyali'nin ilk sürümünü hazırladık. Açık fırsatları
-resmî kaynağıyla birlikte sade bir özet halinde gösteriyor. Şimdilik ücretsiz ve erken
-aşamada. Deneyip anlaşılmayan yeri söylemeniz bizim için kayıt sayısından daha değerli:
-
-`https://akifemir81.github.io/desteksinyali/?ref=linkedin&cid=ORG-001`
-
-## İkinci paylaşım — somut değer
-
-**Başlık:** “Bana uygun mu?” kısmını kısa cevaplıyoruz
-
-Bir destek duyurusunda önce şu dört bilgiyi arıyoruz:
-
-1. Kim başvurabilir?
-2. Son tarih ne?
-3. Ön kayıt gerekiyor mu?
-4. İlk yapılacak iş ne?
-
-DestekSinyali bu bilgileri resmî bağlantıyı gizlemeden tek kartta topluyor. Şu an
-radarda iki açık TÜBİTAK çağrısı var. Haftalık özeti ücretsiz alabilirsiniz:
-
-`https://akifemir81.github.io/desteksinyali/?ref=community&cid=ORG-002`
-
-## Üçüncü paylaşım — geri bildirim
-
-**Başlık:** Küçük işletmeler destekleri nasıl takip ediyor?
-
-Bir işletme sahibi, kurucu veya iş geliştirme sorumlusuysanız dört kısa soruya yazılı
-yanıt arıyoruz:
-
-- Destekleri bugün nereden takip ediyorsunuz?
-- En zor kısım bulmak mı, uygunluğu anlamak mı?
-- Haftalık kısa bir özet işinize yarar mı?
-- Şirketinize özel anlık uyarı için ödeme düşünür müsünüz?
-
-Ürün henüz doğrulama aşamasında; destek kazandırma veya danışmanlık vaadi yok.
-
-`https://akifemir81.github.io/desteksinyali/?ref=personal&cid=ORG-003`
-
-## Yedi günlük yayın sırası
-
-- Gün 1: İlk paylaşım.
-- Gün 3: İkinci paylaşım.
-- Gün 5: Üçüncü paylaşım.
-- Gün 7: Kayıt, nitelikli yanıt ve ücretli alarm ilgisini değerlendirme.
-
-Her topluluğun tanıtım kuralları paylaşım öncesinde okunur. Aynı metin birden fazla
-gruba arka arkaya gönderilmez; yorumlarda destek kazanma vaadi verilmez.

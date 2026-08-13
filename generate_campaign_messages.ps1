@@ -1,29 +1,34 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $public = Join-Path $root 'public'
-$htmlFiles = @(Get-ChildItem -LiteralPath $public -Recurse -Filter '*.html' -File)
+$data = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
+$sitemap = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'sitemap.xml')
+$generated = @(Get-ChildItem -LiteralPath (Join-Path $public 'firsatlar') -Filter '*.html' -File)
 
-foreach ($file in $htmlFiles) {
-    $html = Get-Content -Raw -Encoding UTF8 -LiteralPath $file.FullName
-    if ($html -notmatch '<html[^>]+lang="tr"') { throw "Missing Turkish language marker: $($file.FullName)" }
-    foreach ($imageMatch in [regex]::Matches($html, '<img\b[^>]*>')) {
-        if ($imageMatch.Value -notmatch '\balt="[^"]*"') { throw "Image without alt text: $($file.FullName)" }
-    }
-    foreach ($blankMatch in [regex]::Matches($html, '<a\b[^>]*target="_blank"[^>]*>')) {
-        if ($blankMatch.Value -match '\bhref="https?://' -and $blankMatch.Value -notmatch '\brel="[^"]*noopener') { throw "Unsafe external target blank link: $($file.FullName)" }
-    }
-    foreach ($fieldMatch in [regex]::Matches($html, '<(input|select|textarea)\b[^>]*\bid="([^"]+)"[^>]*>')) {
-        if ($fieldMatch.Value -match '\btype="hidden"') { continue }
-        $id = [regex]::Escape($fieldMatch.Groups[2].Value)
-        if ($html -notmatch ('<label\b[^>]*for="' + $id + '"')) { throw "Form field without label: $($file.FullName) #$id" }
-    }
-    foreach ($assetMatch in [regex]::Matches($html, '(?:href|src)="([^"]+)"')) {
-        $reference = $assetMatch.Groups[1].Value.Split('?')[0].Split('#')[0]
-        if (-not $reference -or $reference -match '^(https?:|mailto:|tel:|data:)') { continue }
-        $decoded = [uri]::UnescapeDataString($reference)
-        $target = Join-Path $file.DirectoryName $decoded
-        if (-not (Test-Path -LiteralPath $target)) { throw "Broken internal reference: $reference in $($file.FullName)" }
+if ($generated.Count -ne $data.opportunities.Count) {
+    throw "Fırsat sayfası sayısı uyuşmuyor: veri=$($data.opportunities.Count), sayfa=$($generated.Count)"
+}
+
+foreach ($item in $data.opportunities) {
+    $relative = "firsatlar/$($item.id).html"
+    $pagePath = Join-Path $public $relative
+    if (-not (Test-Path -LiteralPath $pagePath)) { throw "Eksik fırsat sayfası: $relative" }
+    if (-not $sitemap.Contains($relative)) { throw "Sitemap fırsatı içermiyor: $($item.id)" }
+    $page = Get-Content -Raw -Encoding UTF8 -LiteralPath $pagePath
+    foreach ($needle in @($item.title, $item.source_url, 'application/ld+json')) {
+        if (-not $page.Contains([System.Net.WebUtility]::HtmlEncode([string]$needle)) -and -not $page.Contains([string]$needle)) {
+            throw "Fırsat sayfasında içerik eksik: $($item.id)"
+        }
     }
 }
 
-Write-Output "Site quality audit passed: $($htmlFiles.Count) HTML files"
+$textFiles = @(Get-ChildItem -LiteralPath $public -Recurse -File | Where-Object Extension -in @('.html','.js','.json','.xml'))
+foreach ($file in $textFiles) {
+    $content = Get-Content -Raw -Encoding UTF8 -LiteralPath $file.FullName
+    $suspicious = @([char]0x00C3, [char]0x00C4, [char]0x00C5, [char]0xFFFD)
+    foreach ($marker in $suspicious) {
+        if ($content.Contains([string]$marker)) { throw "Possible character encoding issue: $($file.FullName)" }
+    }
+}
+
+Write-Output "Yayın denetimi başarılı: $($generated.Count) fırsat sayfası"

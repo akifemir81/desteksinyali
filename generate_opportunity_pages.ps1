@@ -1,46 +1,16 @@
-param(
-    [string]$CandidatePath = "",
-    [string]$OutputPath = ""
-)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-if (-not $CandidatePath) { $CandidatePath = Join-Path $root 'output/candidates.json' }
-if (-not $OutputPath) { $OutputPath = Join-Path $root 'output/candidate-review.md' }
-if (-not (Test-Path -LiteralPath $CandidatePath)) { throw "Candidate file not found: $CandidatePath" }
-$payload = Get-Content -Raw -Encoding UTF8 -LiteralPath $CandidatePath | ConvertFrom-Json
-$lines = @(
-    '# DestekSinyali - aday duyuru inceleme raporu',
-    '',
-    "Uretim zamani: $($payload.generated_at)",
-    "Aday sayisi: $($payload.candidate_count)",
-    "Kaynak hatasi: $(@($payload.failures).Count)",
-    ''
-)
-if (@($payload.failures).Count) {
-    $lines += @('## Erisilemeyen kaynaklar','')
-    foreach ($failure in $payload.failures) { $lines += "- $($failure.source_id): $($failure.error)" }
-    $lines += ''
-}
-if (-not @($payload.candidates).Count) {
-    $lines += 'Yeni aday bulunmadi.'
-} else {
-    $grouped = $payload.candidates | Group-Object organization | Sort-Object Name
-    foreach ($group in $grouped) {
-        $lines += @("## $($group.Name)",'')
-        foreach ($item in ($group.Group | Sort-Object title)) {
-            $keywords = @($item.matched_keywords) -join ', '
-            $lines += @(
-                "### $($item.title)",
-                '',
-                "- Kaynak: $($item.source_id)",
-                "- Eslesen kelimeler: $keywords",
-                "- Baglanti: $($item.url)",
-                "- Durum: insan incelemesi bekliyor",
-                ''
-            )
-        }
-    }
-}
-$lines -join "`n" | Set-Content -LiteralPath $OutputPath -Encoding UTF8
-Write-Output "Review report ready: $OutputPath"
+$out = Join-Path $root 'public'
 
+if (Test-Path -LiteralPath $out) { Remove-Item -LiteralPath $out -Recurse -Force }
+New-Item -ItemType Directory -Path $out | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $out 'data') | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $out 'config') | Out-Null
+
+Copy-Item -Path (Join-Path $root 'site/*') -Destination $out -Recurse
+Copy-Item -LiteralPath (Join-Path $root 'data/opportunities.json') -Destination (Join-Path $out 'data/opportunities.json')
+Copy-Item -LiteralPath (Join-Path $root 'config/site.json') -Destination (Join-Path $out 'config/site.json')
+
+& (Join-Path $PSScriptRoot 'generate_opportunity_pages.ps1') -OutputRoot $out
+
+Write-Output "Site paketi hazır: $out"

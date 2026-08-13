@@ -1,53 +1,27 @@
 param(
-    [string]$OutputPath = "",
-    [datetimeoffset]$Now = [datetimeoffset]::Now
+    [string]$CampaignFile = (Join-Path $PSScriptRoot '..\marketing\outreach.csv'),
+    [string]$OutputPath = (Join-Path $PSScriptRoot '..\output\campaign-messages.md')
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-if (-not $OutputPath) { $OutputPath = Join-Path $root 'output/weekly-digest.md' }
-$outputDir = Split-Path -Parent $OutputPath
-if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir | Out-Null }
-$payload = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
-$active = @($payload.opportunities | Where-Object { $_.status -in @('open','evergreen') })
-
-$lines = @(
-    '# DestekSinyali - Haftalik firsat ozeti',
-    '',
-    "**Yayin tarihi:** $($Now.ToString('dd.MM.yyyy'))",
-    '',
-    "Bu hafta radarda **$($active.Count) firsat** var. Basvuru yapmadan once resmi kaynagi kontrol edin.",
-    ''
-)
-
-foreach ($item in $active) {
-    $timing = 'Donemsel / surekli kontrol'
-    if ($item.deadline) {
-        $deadline = [datetimeoffset]::Parse($item.deadline)
-        $days = [math]::Ceiling(($deadline - $Now).TotalDays)
-        $timing = "Son tarih: $($deadline.ToString('dd.MM.yyyy HH:mm')) - $days gun kaldi"
-    }
+$rows = @(Import-Csv -LiteralPath $CampaignFile)
+$ready = @($rows | Where-Object status -eq 'ready')
+$emailTemplate = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'marketing/templates/email.txt')
+$linkedinTemplate = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'marketing/templates/linkedin.txt')
+$lines = @('# DestekSinyali - gonderime hazir kampanya mesajlari','')
+foreach ($row in $ready) {
+    $greeting = if ($row.name) { "Merhaba $($row.name)," } else { 'Merhaba,' }
+    $url = "https://akifemir81.github.io/desteksinyali/?ref=outreach&cid=$($row.id)"
+    $template = if ($row.channel -eq 'Email') { $emailTemplate } else { $linkedinTemplate }
+    $message = $template.Replace('{{GREETING}}',$greeting).Replace('{{COMPANY}}',$row.company).Replace('{{PERSONALIZATION}}',$row.personalization).Replace('{{URL}}',$url).Trim()
     $lines += @(
-        "## $($item.title)",
+        "## $($row.id) - $($row.company)",'',
+        "Kanal: $($row.channel)",
+        $(if ($row.public_contact) { "Alici: $($row.public_contact)" } else { 'Alici: hedef roldeki kisi dogrulanacak' }),
         '',
-        "**Kurum:** $($item.organization)  ",
-        "**Zaman:** $timing  ",
-        '',
-        $item.summary,
-        '',
-        "**Kimler icin?** $($item.who_is_it_for)",
-        '',
-        "**Ilk adim:** $($item.first_step)",
-        '',
-        "[Resmi kaynagi ac]($($item.source_url))",
-        '',
-        '---',
-        ''
+        $message,'',
+        '---',''
     )
 }
-
-$lines += @(
-    'DestekSinyali bilgi ve yonlendirme hizmetidir; mali veya hukuki danismanlik sunmaz.',
-    'Bu e-postayi istemiyorsaniz abonelikten cikma baglantisini kullanabilirsiniz.'
-)
-$lines -join "`n" | Set-Content -LiteralPath $OutputPath -Encoding utf8
-Write-Output "Bulten taslagi hazir: $OutputPath"
+$lines -join "`n" | Set-Content -LiteralPath $OutputPath -Encoding UTF8
+Write-Output "Campaign messages ready: $OutputPath ($($ready.Count) contacts)"
