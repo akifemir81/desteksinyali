@@ -1,0 +1,33 @@
+name: Monitor official sources
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect candidate announcements
+        shell: pwsh
+        run: ./scripts/collect_candidates.ps1
+      - name: Check source health
+        shell: pwsh
+        run: ./scripts/check_sources.ps1 -OutputPath output/source-health.json
+      - name: Build human review report
+        shell: pwsh
+        run: ./scripts/build_review_report.ps1
+      - name: Upload review queue
+        uses: actions/upload-artifact@v4
+        with:
+          name: opportunity-candidates-${{ github.run_number }}
+          path: |
+            output/candidates.json
+            output/candidate-review.md
+            output/source-health.json
+          retention-days: 14

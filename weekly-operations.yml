@@ -1,0 +1,30 @@
+name: Build weekly operating pack
+
+on:
+  schedule:
+    - cron: '30 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate data and build site
+        shell: pwsh
+        run: ./scripts/test.ps1
+      - name: Build weekly operating report
+        shell: pwsh
+        run: ./scripts/weekly_operations_report.ps1
+      - name: Upload weekly pack
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-operating-pack-${{ github.run_number }}
+          path: |
+            output/weekly-digest.md
+            output/weekly-operations.md
+          retention-days: 30
+
