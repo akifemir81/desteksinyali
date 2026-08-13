@@ -9,10 +9,14 @@ $outputDir = Split-Path -Parent $OutputPath
 if (-not (Test-Path $outputDir)) { New-Item -ItemType Directory -Path $outputDir | Out-Null }
 
 $registry = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/sources.json') | ConvertFrom-Json
+$published = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root 'data/opportunities.json') | ConvertFrom-Json
 $keywords = @('destek', 'cagri', 'çağrı', 'hibe', 'teşvik', 'tesvik', 'ihracat', 'ar-ge', 'arge', 'yapay zeka', 'yapay zekâ', 'kobi')
 $candidates = @()
 $failures = @()
 $seen = @{}
+foreach ($item in $published.opportunities) {
+    if ($item.source_url) { $seen[$item.source_url.TrimEnd('/').ToLowerInvariant()] = $true }
+}
 
 foreach ($source in ($registry.sources | Sort-Object priority)) {
     try {
@@ -58,6 +62,7 @@ foreach ($source in ($registry.sources | Sort-Object priority)) {
 [ordered]@{
     generated_at = [datetimeoffset]::Now.ToString('o')
     candidate_count = $candidates.Count
+    published_urls_skipped = $published.opportunities.Count
     candidates = $candidates
     failures = $failures
 } | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath $OutputPath -Encoding UTF8

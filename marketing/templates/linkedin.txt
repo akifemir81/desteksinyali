@@ -1,0 +1,6 @@
+{{GREETING}}
+
+{{COMPANY}} ekibinin {{PERSONALIZATION}} üzerine çalışması nedeniyle size ulaşıyorum. Küçük işletmelerin destekleri nasıl takip ettiğini araştırıyorum. Satış yapmadan, yalnızca dört kısa soru için 12 dakika ayırmanız mümkün mü? Yazılı cevap da olur.
+
+{{URL}}
+

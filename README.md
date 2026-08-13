@@ -48,17 +48,6 @@ Kayıt formu hazır olduğunda bağlantıyı `config/site.json` içindeki
 `waitlist_url` alanına yazmak yeterlidir. GitHub Pages dağıtım iş akışı
 `.github/workflows/deploy-pages.yml` dosyasında hazırdır.
 
-## İlk GitHub yayını
-
-Codex ortamının GitHub ağına erişemediği durumda, kullanıcı kendi Windows
-PowerShell oturumunda aşağıdaki tek komutu çalıştırabilir:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\PUBLISH_TO_GITHUB.ps1
-```
-
-Betik mevcut hedef klasörü silmez; hedef zaten varsa güvenli biçimde durur.
-
 ## Yol haritası
 
 1. Landing page ve bekleme listesiyle 20 hedef kullanıcıya ulaş.
@@ -69,3 +58,10 @@ Betik mevcut hedef klasörü silmez; hedef zaten varsa güvenli biçimde durur.
 
 Stratejik kararlar için [docs/STRATEGY.md](docs/STRATEGY.md), günlük görevler
 için [docs/EVENING_CHECKLIST.md](docs/EVENING_CHECKLIST.md) dosyasına bakın.
+
+## Ücretsiz Gmail otomasyonu
+
+FormSubmit kayıtlarını abone tablosuna aktaran, hoş geldin mesajını ve haftalık
+bülteni gönderen Google Apps Script paketi `automation/google-apps-script`
+klasöründedir. Tek seferlik kurulum için
+[docs/FINAL_SETUP.md](docs/FINAL_SETUP.md) belgesini izleyin.

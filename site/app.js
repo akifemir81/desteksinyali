@@ -12,6 +12,13 @@ function setupSlider(slider) {
 }
 document.querySelectorAll('[data-slider]').forEach(setupSlider);
 
+const campaignParams = new URLSearchParams(location.search);
+const cleanCampaignValue = value => /^[a-zA-Z0-9_-]{1,40}$/.test(value || '') ? value : '';
+const campaignSource = cleanCampaignValue(campaignParams.get('ref')) || 'direct';
+const campaignId = cleanCampaignValue(campaignParams.get('cid'));
+document.querySelector('#campaign-source').value = campaignSource;
+document.querySelector('#campaign-id').value = campaignId;
+
 function setupOpportunitySlider(){const track=document.querySelector('.opportunity-track');const cards=[...track.querySelectorAll('.opportunity')];let current=0;const visible=()=>innerWidth<=850?1:2;function show(index){const max=Math.max(0,cards.length-visible());current=Math.max(0,Math.min(index,max));const cardWidth=cards[0]?.getBoundingClientRect().width||0;track.style.transform=`translateX(-${current*(cardWidth+16)}px)`}document.querySelector('.radar-prev').addEventListener('click',()=>show(current-1));document.querySelector('.radar-next').addEventListener('click',()=>show(current+1));addEventListener('resize',()=>show(current));show(0)}
 function daysLeft(deadline){return deadline?Math.ceil((new Date(deadline)-new Date())/86400000):null}
 function renderCard(item){const days=daysLeft(item.deadline);const timing=days===null?'Dönemsel kontrol':days>=0?`${days} gün kaldı`:'Başvuru dönemi kapandı';const tags=item.tags.map(tag=>`<span class="tag">${escapeHtml(tag.replaceAll('-',' '))}</span>`).join('');return `<article class="opportunity"><div class="opportunity-top"><span class="org">${escapeHtml(item.organization)}</span><span class="timing">${timing}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.summary)}</p><details><summary>Bana uygun mu, ilk ne yapmalıyım?</summary><p><strong>Kimler için:</strong> ${escapeHtml(item.who_is_it_for)}</p><p><strong>İlk adım:</strong> ${escapeHtml(item.first_step)}</p></details><div class="tags">${tags}</div><a class="source" href="${encodeURI(item.source_url)}" target="_blank" rel="noopener">Resmî duyuruyu aç →</a></article>`}

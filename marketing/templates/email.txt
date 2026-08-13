@@ -1,0 +1,13 @@
+**Konu:** Destekleri nasıl takip ediyorsunuz?
+
+{{GREETING}}
+
+{{COMPANY}} ekibinin {{PERSONALIZATION}} üzerine çalıştığını gördüm. Küçük işletmelerin kendilerine uygun destekleri zamanında bulup bulamadığını araştırıyorum.
+
+DestekSinyali, uzun kurum duyurularını “bana uygun mu, son gün ne zaman, ilk ne yapmalıyım?” şeklinde özetleyen erken aşama bir ürün. Satış görüşmesi değil; deneyiminizi anlamak için dört kısa soru sormak istiyorum. 12 dakikalık bir görüşme mümkün olur mu?
+
+{{URL}}
+
+Teşekkürler,
+DestekSinyali
+
