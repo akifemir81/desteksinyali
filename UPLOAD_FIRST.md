@@ -1,13 +1,15 @@
-# GitHub'a yükleme
-
-Bu klasörün **içindeki tüm dosya ve klasörleri** şu deponun ana dizinine
-yükleyin:
-
-<https://github.com/akifemir81/desteksinyali>
-
-`.github` klasörü gizli görünebilir; yüklemeye dahil edilmelidir. Yükleme sonrası
-GitHub **Actions** bölümündeki `Deploy DestekSinyali` işi yeşil olduğunda canlı
-site güncellenmiş olur.
-
-Ardından yalnızca [docs/FINAL_SETUP.md](docs/FINAL_SETUP.md) belgesindeki canlı
-kayıt testi ve Google Apps Script yetkilendirmesi kalır.
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://akifemir81.github.io/desteksinyali/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://akifemir81.github.io/desteksinyali/gizlilik.html</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
