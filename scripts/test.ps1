@@ -3,18 +3,29 @@ $root = Split-Path -Parent $PSScriptRoot
 
 & (Join-Path $PSScriptRoot 'validate_data.ps1')
 & (Join-Path $PSScriptRoot 'build.ps1')
+& (Join-Path $PSScriptRoot 'audit_publication.ps1')
+& (Join-Path $PSScriptRoot 'audit_site_quality.ps1')
 & (Join-Path $PSScriptRoot 'generate_digest.ps1')
 & (Join-Path $PSScriptRoot 'campaign_queue.ps1')
 & (Join-Path $PSScriptRoot 'weekly_operations_report.ps1')
 & (Join-Path $PSScriptRoot 'generate_campaign_messages.ps1')
+& (Join-Path $PSScriptRoot 'generate_social_kit.ps1')
 
 $public = Join-Path $root 'public'
 $requiredFiles = @(
     'index.html',
     'gizlilik.html',
+    'yontemimiz.html',
+    'pilot.html',
+    'pilot.js',
+    'assets/favicon.svg',
+    'assets/brand-mark.svg',
+    'assets/icons.svg',
+    'assets/safari-pinned-tab.svg',
     'app.js',
     'data/opportunities.json',
-    'config/site.json'
+    'config/site.json',
+    'feed.xml'
 )
 foreach ($file in $requiredFiles) {
     if (-not (Test-Path -LiteralPath (Join-Path $public $file))) { throw "Missing build artifact: $file" }
@@ -28,11 +39,24 @@ foreach ($needle in @('campaign_source', 'campaign_id', 'landing_variant')) {
     if (-not $source.Contains($needle)) { throw "Missing campaign attribution marker: $needle" }
 }
 if (-not $source.Contains('paid_alert_interest')) { throw 'Missing paid alert interest field' }
+$pilot = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'pilot.html')
+foreach ($needle in @('pilot_490_request', 'PILOT-490-V1', '490 TL', 'id="pilot-form"')) {
+    if (-not $pilot.Contains($needle)) { throw "Missing paid pilot marker: $needle" }
+}
+foreach ($needle in @('FAQPage', 'id="share-box"', 'modern-v2')) {
+    if (-not $source.Contains($needle)) { throw "Missing conversion marker: $needle" }
+}
+foreach ($legacyIcon in @('>⌁<', '>⌕<', '>≡<', '>ⓘ<')) {
+    if ($source.Contains($legacyIcon)) { throw "Legacy font icon remains: $legacyIcon" }
+}
+$manifest = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $public 'site.webmanifest') | ConvertFrom-Json
+if (-not $manifest.icons -or $manifest.icons.Count -lt 1) { throw 'Web manifest has no application icon' }
+if (-not $source.Contains('assets/brand-mark.svg') -or -not $source.Contains('assets/icons.svg#')) { throw 'Brand or UI SVG system is not connected' }
 
 $automation = Join-Path $root 'automation/google-apps-script/Code.gs'
 if (-not (Test-Path -LiteralPath $automation)) { throw 'Missing Google Apps Script automation' }
 $automationSource = Get-Content -Raw -Encoding UTF8 -LiteralPath $automation
-foreach ($needle in @('setupDestekSinyali', 'processRegistrationEmails', 'sendWeeklyDigest', 'processUnsubscribeEmails', 'MailApp.getRemainingDailyQuota')) {
+foreach ($needle in @('setupDestekSinyali', 'processRegistrationEmails', 'sendWeeklyDigest', 'sendOwnerWeeklyReport', 'processUnsubscribeEmails', 'MailApp.getRemainingDailyQuota')) {
     if (-not $automationSource.Contains($needle)) { throw "Missing automation marker: $needle" }
 }
 $manifestPath = Join-Path $root 'automation/google-apps-script/appsscript.json'

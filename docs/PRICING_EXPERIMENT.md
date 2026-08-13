@@ -13,20 +13,20 @@ oluşur:
 
 ## İlk fiyat hipotezi
 
-Pilot soru aylık **249 TL** üzerinden sorulur. Bu bir satış veya indirim vaadi
-değildir; ödeme alınmadan önce talep sinyalini ölçen bir fiyat araştırmasıdır.
+Somut pilot teklif aylık **490 TL** üzerinden doğrulanır. Kapsam; şirket profiline
+göre eşleştirme, kritik tarih hatırlatması ve ilk adım/belge kontrol listesidir.
+Talep aşamasında ödeme alınmaz.
 
 ## Karar kapısı
 
-- En az 10 nitelikli kayıt olmadan sonuç yorumlanmaz.
-- En az 3 kişi `pilot_249_yes` seçmeden ödeme altyapısı kurulmaz.
+- En az 100 nitelikli ziyaret veya 30 günlük test oluşmadan sonuç yorumlanmaz.
+- En az 3 kişi `pilot_490_request` göndermeden ödeme altyapısı kurulmaz.
 - Form cevabı gerçek ödeme yerine geçmez; sonraki aşamada açık şartlarla küçük bir
   ücretli pilot teklifi yapılır.
-- Üçten az sinyal varsa önce teklif, hedef segment veya fayda anlatımı değiştirilir.
+- Üçten az ciddi talep varsa yeni özellik geliştirilmez ve gelir modeli değiştirilir.
 
 ## Ölçüm
 
 FormSubmit kaydındaki `paid_alert_interest`, `campaign_source` ve `campaign_id`
 alanları birlikte değerlendirilir. Böylece yalnızca fiyat niyeti değil, hangi
 kampanya mesajının nitelikli talep getirdiği görülür.
-

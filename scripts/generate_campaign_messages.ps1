@@ -13,7 +13,7 @@ foreach ($row in $ready) {
     $greeting = if ($row.name) { "Merhaba $($row.name)," } else { 'Merhaba,' }
     $url = "https://akifemir81.github.io/desteksinyali/?ref=outreach&cid=$($row.id)"
     $template = if ($row.channel -eq 'Email') { $emailTemplate } else { $linkedinTemplate }
-    $message = $template.Replace('{{GREETING}}',$greeting).Replace('{{COMPANY}}',$row.company).Replace('{{PERSONALIZATION}}',$row.personalization.ToLowerInvariant()).Replace('{{URL}}',$url).Trim()
+    $message = $template.Replace('{{GREETING}}',$greeting).Replace('{{COMPANY}}',$row.company).Replace('{{PERSONALIZATION}}',$row.personalization).Replace('{{URL}}',$url).Trim()
     $lines += @(
         "## $($row.id) - $($row.company)",'',
         "Kanal: $($row.channel)",

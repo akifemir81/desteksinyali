@@ -13,10 +13,15 @@ foreach ($row in $payload.opportunities) {
         }
     }
     if ($seen.ContainsKey($row.id)) { throw "Tekrarlanan id: $($row.id)" }
+    if ([string]$row.id -notmatch '^[a-z0-9-]{3,100}$') { throw "Geçersiz fırsat id: $($row.id)" }
     $seen[$row.id] = $true
     $uri = [uri]$row.source_url
     if ($uri.Scheme -ne 'https') { throw "HTTPS olmayan kaynak: $($row.id)" }
     if ($allowedHosts -notcontains $uri.Host.ToLowerInvariant()) { throw "Resmi izin listesinde olmayan kaynak: $($row.id)" }
+    $checkedAt = [datetimeoffset]::Parse($row.checked_at)
+    if ($checkedAt -lt [datetimeoffset]::Now.AddDays(-7)) {
+        throw "Yedi günden uzun süredir doğrulanmayan fırsat: $($row.id)"
+    }
     if ($row.deadline -and [datetimeoffset]::Parse($row.deadline) -lt [datetimeoffset]::Parse($row.checked_at)) {
         throw "Süresi geçmiş fırsat açık veri setinde: $($row.id)"
     }

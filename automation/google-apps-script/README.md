@@ -28,7 +28,22 @@ Bu işlem bir kez yapılır. `setupDestekSinyali` şu zamanlayıcıları otomati
 
 - saatte bir yeni FormSubmit kaydı,
 - altı saatte bir abonelikten çıkış,
-- pazartesi 10:00 civarında haftalık bülten.
+- pazartesi 10:00 civarında haftalık bülten,
+- pazartesi 11:00 civarında hesap sahibine kayıt ve kanal özeti.
+
+Kod daha önce kurulmuşsa güncel `Code.gs` yapıştırıldıktan sonra
+`setupDestekSinyali` bir kez yeniden çalıştırılır. Abone tablosu korunur; yalnızca
+zamanlayıcılar güncel listeyle yeniden kurulur.
+
+## İlk pazarlama dalgası
+
+`Campaign.gs` dosyası ilk üç doğrulanmış kurumsal alıcı için ölçümlü kampanya taslaklarını
+içerir. Apps Script projesine aynı adla yeni bir komut dosyası olarak eklenir.
+Önce `previewFirstCampaignWave` çalıştırılarak alıcı ve metinler incelenir.
+`createFirstCampaignDrafts` yalnızca Gmail taslakları oluşturur; mesaj göndermez.
+Ticari ileti gönderici kimliği, İYS ve ret hakkı yükümlülükleri doğrulanmadan taslaklar
+gönderilmez. Kod aynı kampanya kimliği için ikinci taslağı oluşturmaz ve sonuçları
+`Marketing` sayfasına kaydeder.
 
 Google, saat tabanlı çalıştırma zamanını seçilen saatin içinde bir miktar
 rastgeleleştirebilir.
@@ -52,4 +67,3 @@ hata oluştuğunda incelenmelidir.
 
 İlk kurulumdan sonra canlı kayıt testi yapın. Test adresi `Subscribers` sayfasına
 eklenmeli ve hoş geldin mesajı gelmelidir.
-

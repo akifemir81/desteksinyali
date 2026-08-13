@@ -11,4 +11,6 @@ Copy-Item -Path (Join-Path $root 'site/*') -Destination $out -Recurse
 Copy-Item -LiteralPath (Join-Path $root 'data/opportunities.json') -Destination (Join-Path $out 'data/opportunities.json')
 Copy-Item -LiteralPath (Join-Path $root 'config/site.json') -Destination (Join-Path $out 'config/site.json')
 
+& (Join-Path $PSScriptRoot 'generate_opportunity_pages.ps1') -OutputRoot $out
+
 Write-Output "Site paketi hazır: $out"

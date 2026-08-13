@@ -1,1 +1,13 @@
-fetch('config/site.json').then(r=>r.json()).then(config=>{const form=document.querySelector('#pilot-form');const button=form.querySelector('button');const status=document.querySelector('#pilot-status');if(!config.contact_email){status.textContent='Pilot talepleri henüz açılmadı.';return}button.disabled=false;form.addEventListener('submit',async event=>{event.preventDefault();button.disabled=true;status.textContent='Talebiniz gönderiliyor…';try{const response=await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(config.contact_email)}`,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});if(!response.ok)throw new Error();form.reset();status.textContent='Talebiniz alındı. Yeterli başvuru oluşursa kapsam ve başlangıç bilgisini e-postayla göndereceğiz.'}catch{status.innerHTML=`Şu anda gönderilemedi. <a href="mailto:${encodeURIComponent(config.contact_email)}?subject=DestekSinyali%20pilot%20talebi">E-postayla iletin.</a>`}finally{button.disabled=false}})});
+# GitHub'a yükleme
+
+Bu klasörün **içindeki tüm dosya ve klasörleri** şu deponun ana dizinine
+yükleyin:
+
+<https://github.com/akifemir81/desteksinyali>
+
+`.github` klasörü gizli görünebilir; yüklemeye dahil edilmelidir. Yükleme sonrası
+GitHub **Actions** bölümündeki `Deploy DestekSinyali` işi yeşil olduğunda canlı
+site güncellenmiş olur.
+
+Ardından yalnızca [docs/FINAL_SETUP.md](docs/FINAL_SETUP.md) belgesindeki canlı
+kayıt testi ve Google Apps Script yetkilendirmesi kalır.

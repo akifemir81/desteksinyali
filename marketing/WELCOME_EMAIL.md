@@ -2,9 +2,8 @@
 
 Merhaba,
 
-DestekSinyali erken erişimine katıldığın için teşekkürler. Yazılım ve dijital
-hizmet şirketlerine uygun olabilecek resmî destekleri sade, kaynak bağlantılı
-bir özet halinde göndereceğiz.
+DestekSinyali erken erişimine katıldığın için teşekkürler. Açık destekleri sade,
+kaynak bağlantılı bir özet halinde göndereceğiz.
 
 İlk özeti hazırlarken tek bir cevap bize yardımcı olur:
 

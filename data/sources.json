@@ -11,15 +11,15 @@
     {
       "id": "ticaret-hizmet-destekleri",
       "name": "Hizmet Sektörü Destekleri",
-      "url": "https://ticaret.gov.tr/destekler/hizmet-sektoru-destekleri/duyurular",
+      "url": "https://ticaret.gov.tr/destekler/hizmet-sektoru-destekleri/hizmet-sektorlerinin-desteklenmesine-iliskin-genelge-ve-ekleri",
       "organization": "T.C. Ticaret Bakanlığı",
-      "include_path_patterns": ["^/destekler/hizmet-sektoru-destekleri/duyurular/"],
+      "include_path_patterns": ["^/destekler/hizmet-sektoru-destekleri/"],
       "priority": 1
     },
     {
       "id": "kosgeb-duyurular",
       "name": "KOSGEB Duyuruları",
-      "url": "https://www.kosgeb.gov.tr/site/tr/genel/liste/13/genel-duyurular",
+      "url": "https://www.kosgeb.gov.tr/site/tr/genel/liste/2/duyurular",
       "organization": "KOSGEB",
       "include_path_patterns": ["^/site/tr/genel/detay/"],
       "priority": 2

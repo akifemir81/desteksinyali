@@ -18,7 +18,7 @@ const DS = Object.freeze({
 });
 
 const SUBSCRIBER_HEADERS = Object.freeze([
-  'email', 'company', 'export_status', 'paid_alert_interest',
+  'email', 'company', 'sector', 'need', 'export_status', 'paid_alert_interest',
   'campaign_source', 'campaign_id', 'status', 'registered_at',
   'welcome_sent_at', 'last_digest_at', 'unsubscribed_at'
 ]);
@@ -149,6 +149,50 @@ function sendWeeklyDigest() {
   });
 }
 
+function sendOwnerWeeklyReport() {
+  return withLock_(function() {
+    const sheet = getSpreadsheet_().getSheetByName(DS.subscribersSheet);
+    const data = sheet.getDataRange().getValues();
+    const index = headerIndex_(data[0]);
+    const weekAgo = Date.now() - 7 * 86400000;
+    let active = 0;
+    let newThisWeek = 0;
+    let paidInterest = 0;
+    const sources = {};
+
+    for (let row = 1; row < data.length; row += 1) {
+      const values = data[row];
+      if (values[index.status] !== 'active') continue;
+      active += 1;
+      const registeredAt = new Date(values[index.registered_at]).getTime();
+      if (!isNaN(registeredAt) && registeredAt >= weekAgo) newThisWeek += 1;
+      if (['pilot_249_yes', 'pilot_490_request'].indexOf(String(values[index.paid_alert_interest])) >= 0) paidInterest += 1;
+      const source = String(values[index.campaign_source] || 'direct');
+      sources[source] = (sources[source] || 0) + 1;
+    }
+
+    const sourceLines = Object.keys(sources).sort(function(a, b) { return sources[b] - sources[a]; }).map(function(source) {
+      return '- ' + source + ': ' + sources[source];
+    });
+    const date = Utilities.formatDate(new Date(), 'Europe/Istanbul', 'dd.MM.yyyy');
+    const body = [
+      'DestekSinyali haftalık yönetici özeti — ' + date,
+      '',
+      'Aktif abone: ' + active,
+      'Son 7 gün yeni kayıt: ' + newThisWeek,
+      'Ücretli alarm ilgisi: ' + paidInterest,
+      '',
+      'Kayıt kaynakları:',
+      sourceLines.length ? sourceLines.join('\n') : '- Henüz kayıt yok',
+      '',
+      active < 20 ? 'Karar: Organik dağıtım testine devam et; ücretli reklam açma.' : 'Karar: Kanal ve ödeme niyeti oranlarını incele.'
+    ].join('\n');
+    MailApp.sendEmail({to: DS.contactEmail, subject: 'DestekSinyali haftalık yönetici özeti', body: body, name: DS.senderName});
+    log_('INFO', 'owner_report_sent', 'active=' + active + ', new=' + newThisWeek + ', paid_interest=' + paidInterest);
+    return {active: active, newThisWeek: newThisWeek, paidInterest: paidInterest, sources: sources};
+  });
+}
+
 function runSelfTest() {
   const sample = [
     'email:',
@@ -183,6 +227,8 @@ function parseFormSubmitBody_(body) {
     company: true,
     export_status: true,
     paid_alert_interest: true,
+    sector: true,
+    need: true,
     campaign_source: true,
     campaign_id: true,
     landing_variant: true,
@@ -220,19 +266,14 @@ function upsertSubscriber_(fields, registeredAt) {
     }
   }
 
-  sheet.appendRow([
-    email,
-    sanitizeCell_(fields.company || ''),
-    sanitizeCell_(fields.export_status || ''),
-    sanitizeCell_(fields.paid_alert_interest || ''),
-    sanitizeCell_(fields.campaign_source || 'direct'),
-    sanitizeCell_(fields.campaign_id || ''),
-    'active',
-    registeredAt || new Date(),
-    '',
-    '',
-    ''
-  ]);
+  const subscriber = {
+    email: email, company: sanitizeCell_(fields.company || ''), sector: sanitizeCell_(fields.sector || ''),
+    need: sanitizeCell_(fields.need || ''), export_status: sanitizeCell_(fields.export_status || ''),
+    paid_alert_interest: sanitizeCell_(fields.paid_alert_interest || ''),
+    campaign_source: sanitizeCell_(fields.campaign_source || 'direct'), campaign_id: sanitizeCell_(fields.campaign_id || ''),
+    status: 'active', registered_at: registeredAt || new Date(), welcome_sent_at: '', last_digest_at: '', unsubscribed_at: ''
+  };
+  sheet.appendRow(data[0].map(function(header) { return subscriber[String(header)] || ''; }));
   return {created: true};
 }
 
@@ -266,11 +307,13 @@ function unsubscribe_(email) {
 function sendWelcomeEmail_(email, company) {
   const companyLine = company ? '<p><strong>' + escapeHtml_(company) + '</strong> için uygun fırsatları daha iyi eşleştirebilmek üzere kayıt bilgilerinizi aldık.</p>' : '';
   const unsubscribe = unsubscribeMailto_(email);
+  const shareUrl = DS.siteUrl + '?ref=member&cid=WELCOME-SHARE';
   const html = '<div style="font-family:Arial,sans-serif;max-width:620px;color:#0c2238;line-height:1.6">' +
     '<h1 style="font-size:28px">DestekSinyali’ne hoş geldiniz</h1>' +
     '<p>Yeni destekleri kısa, anlaşılır ve resmî kaynak bağlantısıyla paylaşacağız.</p>' + companyLine +
     '<p>İlk haftalık özet pazartesi günü gelecek. Bir sorunuz olduğunda bu e-postayı yanıtlayabilirsiniz.</p>' +
-    '<p><a href="' + DS.siteUrl + '">Güncel fırsatları açın</a></p>' +
+    '<p><a href="' + DS.siteUrl + '" style="display:inline-block;padding:11px 16px;border-radius:8px;background:#1769e0;color:#fff;text-decoration:none;font-weight:bold">Güncel fırsatları açın</a></p>' +
+    '<p style="padding:14px;background:#eef4fb;border-radius:10px">Bu özetin işine yarayacağı birini biliyorsanız <a href="' + shareUrl + '">DestekSinyali bağlantısını paylaşabilirsiniz</a>.</p>' +
     '<hr style="border:0;border-top:1px solid #dfe7ef"><p style="font-size:12px;color:#607286">Başvuru danışmanlığı sunmuyoruz. Karar vermeden önce resmî kaynağı kontrol edin. <a href="' + unsubscribe + '">Listeden ayrıl</a></p></div>';
   MailApp.sendEmail({
     to: email,
@@ -286,22 +329,31 @@ function fetchActiveOpportunities_() {
   const response = UrlFetchApp.fetch(DS.opportunitiesUrl, {muteHttpExceptions: true});
   if (response.getResponseCode() !== 200) throw new Error('Opportunity feed HTTP ' + response.getResponseCode());
   const payload = JSON.parse(response.getContentText('UTF-8'));
+  const updatedAt = new Date(payload.updated_at);
+  if (isNaN(updatedAt.getTime()) || (Date.now() - updatedAt.getTime()) > 7 * 86400000) {
+    throw new Error('Opportunity feed is older than 7 days; digest was not sent');
+  }
+  const now = Date.now();
   return (payload.opportunities || []).filter(function(item) {
-    return item.status === 'open' || item.status === 'evergreen';
+    const active = item.status === 'open' || item.status === 'evergreen';
+    const notExpired = !item.deadline || new Date(item.deadline).getTime() >= now;
+    return active && notExpired;
   });
 }
 
 function buildDigest_(opportunities, recipientEmail) {
   const date = Utilities.formatDate(new Date(), 'Europe/Istanbul', 'dd.MM.yyyy');
   const cards = opportunities.map(function(item) {
-    const deadline = item.deadline ? '<p><strong>Son tarih:</strong> ' + escapeHtml_(String(item.deadline).slice(0, 10)) + '</p>' : '<p><strong>Başvuru:</strong> Dönemsel veya sürekli kontrol ediliyor</p>';
+    const deadlineText = item.deadline ? Utilities.formatDate(new Date(item.deadline), 'Europe/Istanbul', 'dd.MM.yyyy') : '';
+    const deadline = deadlineText ? '<p><strong>Son tarih:</strong> ' + deadlineText + '</p>' : '<p><strong>Başvuru:</strong> Dönemsel veya sürekli kontrol ediliyor</p>';
+    const detailUrl = DS.siteUrl + 'firsatlar/' + encodeURIComponent(item.id) + '.html';
     return '<div style="border:1px solid #dfe7ef;border-radius:12px;padding:18px;margin:16px 0">' +
       '<div style="font-size:12px;color:#1769e0;font-weight:bold">' + escapeHtml_(item.organization) + '</div>' +
       '<h2 style="font-size:20px">' + escapeHtml_(item.title) + '</h2>' +
       '<p>' + escapeHtml_(item.summary) + '</p>' + deadline +
       '<p><strong>Kimler için?</strong> ' + escapeHtml_(item.who_is_it_for) + '</p>' +
       '<p><strong>İlk adım:</strong> ' + escapeHtml_(item.first_step) + '</p>' +
-      '<a href="' + encodeURI(item.source_url) + '">Resmî duyuruyu aç →</a></div>';
+      '<a href="' + detailUrl + '">Sade özeti aç →</a> &nbsp; <a href="' + encodeURI(item.source_url) + '">Resmî duyuru</a></div>';
   }).join('');
   const unsubscribe = unsubscribeMailto_(recipientEmail);
   const html = '<div style="font-family:Arial,sans-serif;max-width:680px;color:#0c2238;line-height:1.55">' +
@@ -310,7 +362,8 @@ function buildDigest_(opportunities, recipientEmail) {
     '<p><a href="' + DS.siteUrl + '">DestekSinyali’ni açın</a></p>' +
     '<hr style="border:0;border-top:1px solid #dfe7ef"><p style="font-size:12px;color:#607286">DestekSinyali bağımsız bilgi hizmetidir. <a href="' + unsubscribe + '">Listeden ayrıl</a></p></div>';
   const text = opportunities.map(function(item) {
-    return item.title + '\n' + item.summary + '\nResmî kaynak: ' + item.source_url;
+    const deadline = item.deadline ? Utilities.formatDate(new Date(item.deadline), 'Europe/Istanbul', 'dd.MM.yyyy') : 'Dönemsel kontrol';
+    return item.title + '\n' + item.summary + '\nSon tarih: ' + deadline + '\nKimler için: ' + item.who_is_it_for + '\nİlk adım: ' + item.first_step + '\nResmî kaynak: ' + item.source_url;
   }).join('\n\n---\n\n');
   return {subject: 'DestekSinyali: Bu hafta radarda (' + date + ')', html: html, text: text + '\n\nÇıkış: ' + unsubscribe};
 }
@@ -320,12 +373,23 @@ function replaceTriggers_() {
   ScriptApp.newTrigger('processRegistrationEmails').timeBased().everyHours(1).create();
   ScriptApp.newTrigger('processUnsubscribeEmails').timeBased().everyHours(6).create();
   ScriptApp.newTrigger('sendWeeklyDigest').timeBased().onWeekDay(ScriptApp.WeekDay.MONDAY).atHour(10).create();
+  ScriptApp.newTrigger('sendOwnerWeeklyReport').timeBased().onWeekDay(ScriptApp.WeekDay.MONDAY).atHour(11).create();
 }
 
 function ensureSheet_(spreadsheet, name, headers) {
   let sheet = spreadsheet.getSheetByName(name);
   if (!sheet) sheet = spreadsheet.insertSheet(name);
-  if (sheet.getLastRow() === 0) sheet.appendRow(headers);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(headers);
+  } else {
+    const existingHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+    headers.forEach(function(header) {
+      if (existingHeaders.indexOf(header) < 0) {
+        sheet.getRange(1, sheet.getLastColumn() + 1).setValue(header);
+        existingHeaders.push(header);
+      }
+    });
+  }
   sheet.setFrozenRows(1);
   return sheet;
 }
@@ -384,4 +448,3 @@ function unsubscribeMailto_(email) {
 function safeError_(error) {
   return String(error && error.message ? error.message : error).slice(0, 1000);
 }
-
